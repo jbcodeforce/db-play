@@ -1,0 +1,7 @@
+site_name: DataBase playground with CDC 
+repo_url: https://github.com/jbcodeforce/db-play
+nav:
+  - Postgres: postgres.md
+  - MySQL: mysql.md 
+theme: 
+  name: gitbook

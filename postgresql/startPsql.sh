@@ -1,4 +1,8 @@
-export POSTGRESQL_USER=postgres
-export POSTGRESQL_PWD=postgres
+source ../setenv.sh $1
 
-PGPASSWORD=$POSTGRESQL_PWD psql --host=localhost --port=5432 --username=$POSTGRESQL_USER  -d postgres
+docker run -ti -v $(pwd):/home \
+  -e POSTGRES_USER=$POSTGRESQL_USER \
+  -e POSTGRES_PWD=$POSTGRESQL_PWD \
+  -e POSTGRES_DB=$POSTGRESQL_DBNAME \
+  -e POSTGRES_HOST=$POSTGRESQL_HOST \
+  postgres bash 
