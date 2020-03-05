@@ -1,5 +1,7 @@
 # PostgreSQL
 
+[Postgresql](https://www.postgresql.org/) is open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
+
 ## Create Postgres databases
 
 ### Create an instance of Postgresql on IBM Cloud
@@ -14,7 +16,7 @@ ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
 
 ### Run Postgres locally
 
-Set the environment variables: `source setenv.sh LOCAL`.
+Set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the setenv.sh tool and then use the command: `source setenv.sh LOCAL`.
 
 Under the postgresql folder:
 
@@ -31,6 +33,7 @@ psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 
 ## Create customers
 
+Here is the complete SQL you can run in psql 
 ```sql
 CREATE TABLE customers (customer_id varchar(8) PRIMARY KEY, lastname varchar(40) NOT NULL, firstname varchar(40) NOT NULL, zipcode varchar(5), country varchar(40), status integer);
 INSERT INTO customers (customer_id,lastname,firstname,zipcode,country,status) VALUES
@@ -40,7 +43,15 @@ INSERT INTO customers (customer_id,lastname,firstname,zipcode,country,status) VA
 ('C04','Messenger','John','95052','USA',1);
 ```
 
+or use the command
+
+```shell
+psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/customer.sql
+``` 
+
 ## Create products
+
+Products define fresh product with controlled temperature and humidity to control for the travel.
 
 ```sql
 CREATE TABLE products (
@@ -57,6 +68,10 @@ INSERT INTO products(product_id,description,target_temperature,target_humidity_l
 ('P03','Salad',4,0.4,1),
 ('P04','Avocado',6,0.4,1),
 ('P05','Tomato',4,0.4,2);
+```
+
+```shell
+psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/product.sql
 ```
 
 ## Create containers
