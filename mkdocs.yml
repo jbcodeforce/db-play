@@ -3,5 +3,6 @@ repo_url: https://github.com/jbcodeforce/db-play
 nav:
   - Postgres: postgres.md
   - MySQL: mysql.md 
+  - Mongo: mongodb.md
 theme: 
   name: gitbook

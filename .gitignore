@@ -2,3 +2,4 @@ datadir/
 postgresql/database/
 setenv.sh
 postgresql/postgresql.crt
+site/

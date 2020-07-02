@@ -7,7 +7,7 @@ Better read in [book format.](https://jbcodeforce.github.io/db-play/).
 
 ## Todo
 
-- [] Describe accessing postgres with python
+- [] Describe accessing postgresql with python
 - [] CDC debezium
 - [] kafka connect from postgres source  
 - [] complete mysql play

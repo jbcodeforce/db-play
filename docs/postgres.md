@@ -31,6 +31,27 @@ Under the postgresql folder:
 psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 ```
 
+### Deploy postgresql on openshift
+
+In the develop perspective in openshoft console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. 
+
+See [this openshift tutorial](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
+
+The environment variables are defined as secrets under the postgresql name: `oc describe secret postgresql`
+
+Remote connect to the postgresql pod: `oc rsh podid`
+
+Then start `psql` using the following command: 
+
+```shell
+PGPASSWORD=$POSTGRESQL_PASSWORD psql -h postgresql $POSTGRESQL_DATABASE $POSTGRESQL_USER
+psql (10.12)
+Type "help" for help.
+
+vaccinedb=>
+```
+
+
 ## Create customers
 
 Here is the complete SQL you can run in psql 
