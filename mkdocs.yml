@@ -4,5 +4,6 @@ nav:
   - Postgres: postgres.md
   - MySQL: mysql.md 
   - Mongo: mongodb.md
+  - DB2: db2.md
 theme: 
   name: gitbook
