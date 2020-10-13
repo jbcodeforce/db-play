@@ -3,6 +3,7 @@ repo_url: https://github.com/jbcodeforce/db-play
 nav:
   - Postgres: postgres.md
   - MySQL: mysql.md 
+  - Couchdb / Cloudand: couchdb.md
   - Mongo: mongodb.md
   - DB2: db2.md
 theme: 
