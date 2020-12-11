@@ -1,5 +1,7 @@
 # DB2
 
+## Getting started
+
 ## Docker
 
 See [instructions here](https://hub.docker.com/r/ibmcom/db2)
@@ -29,8 +31,15 @@ db2 connect reset
 
 ```shell
 # Create the sample DB; creating tables and data in schema "DB2INST1".
-db2sampl -force -sql
+db2 sample -force -sql
 # Connect to it
-db2 connect to sample
-
+db2 connect to sample user db2inst1
+# list tables
+ db2 list tables
+# Look at the structure of a table
+db2 describe table DB2INST1.ORDEREVENTS
 ```
+
+## DB2 on cloud
+
+Once the service is created get the credential, user, jdbc url and password. Then to access it from a pod on OpenShift, define a secret with those variable encoded with base64

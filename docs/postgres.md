@@ -2,6 +2,9 @@
 
 [Postgresql](https://www.postgresql.org/) is open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
 
+## Value propositions
+
+* 
 ## Create Postgres databases
 
 ### Create an instance of Postgresql on IBM Cloud
@@ -16,7 +19,7 @@ ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
 
 ### Run Postgres locally
 
-Set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the setenv.sh tool and then use the command: `source setenv.sh LOCAL`.
+Set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
 
 Under the postgresql folder:
 
@@ -33,11 +36,9 @@ psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 
 ### Deploy postgresql on openshift
 
-In the develop perspective in openshoft console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. 
+In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See [this OpenShift tutorial for more info](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
 
-See [this openshift tutorial](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
-
-The environment variables are defined as secrets under the postgresql name: `oc describe secret postgresql`
+The environment variables are defined as secrets under the postgresql namespace: `oc describe secret postgresql`
 
 Remote connect to the postgresql pod: `oc rsh podid`
 
