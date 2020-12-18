@@ -5,6 +5,7 @@
 ## Value propositions
 
 * 
+
 ## Create Postgres databases
 
 ### Create an instance of Postgresql on IBM Cloud
@@ -34,7 +35,7 @@ Under the postgresql folder:
 psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 ```
 
-### Deploy postgresql on openshift
+### Deploy postgresql on OpenShift
 
 In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See [this OpenShift tutorial for more info](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
 
