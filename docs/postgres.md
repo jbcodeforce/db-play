@@ -4,18 +4,39 @@
 
 ## Value propositions
 
-* 
+
+## Project using postgresql
+
+* [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr)
+* In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  
 
 ## Create Postgres databases
 
 ### Create an instance of Postgresql on IBM Cloud
 
-No need to reinvent the [product documentation](https://cloud.ibm.com/docs/services/databases-for-postgresql) to create one instance.
+No need to reinvent the [product documentation](https://cloud.ibm.com/services/databases-for-postgresql) to create one instance. A summary of what needs to be done
 
-Get SSL certificate for client using ibm cloud CLI
+* Set user admin password:
+
+```
+ibmcloud cdb user-password <instance name> admin alongpassw0rd
+```
+
+* Get URL to connect to the service: URL, Port number
+
+* Get SSL certificate for client using ibm cloud CLI
 
 ```shell
 ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
+```
+
+* Use `pgAdmin4` to administer postgres: add a server and complete the ULR, port, admin as user and the password set in previous step.
+
+```shell
+
+docker run -p 8080:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
+# http://localhost:8080/browser/
+
 ```
 
 ### Run Postgres locally
@@ -26,6 +47,48 @@ Under the postgresql folder:
 
 * start the docker image for the database: `./startPostgresqlLocal.sh`
 * Start bash in a postgres image to access psql: `./startPsql.sh LOCAL`
+
+another way is with docker compose:
+
+```yaml
+ postgresql:
+    container_name: postgres
+    hostname: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgpwd
+      POSTGRES_DB: ordersdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data/
+```
+
+### Some psql commands
+
+```shell
+# switch to another DB
+\c dbname
+# list existing DBs
+\l
+# list available tables
+\dt 
+# describe table
+\d table_name
+# list schemas
+\dn
+# list available funtions
+\df
+# views
+\dv
+# list users
+\du
+# command history
+\s
+# execute previoud commmand
+\g
+```
 
 ### Connect to remote Postgres on IBM Cloud
 
@@ -46,7 +109,7 @@ Remote connect to the postgresql pod: `oc rsh podid`
 Then start `psql` using the following command: 
 
 ```shell
-PGPASSWORD=$POSTGRESQL_PASSWORD psql -h postgresql $POSTGRESQL_DATABASE $POSTGRESQL_USER
+PGPASSWORD=$POSTGRESQL_PASSWORD psql -h postgresql -d $POSTGRESQL_DATABASE -U $POSTGRESQL_USER
 psql (10.12)
 Type "help" for help.
 
