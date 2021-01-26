@@ -7,7 +7,7 @@
 
 ## Project using postgresql
 
-* [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr)
+* [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
 * In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  
 
 ## Create Postgres databases
@@ -100,6 +100,12 @@ psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 
 ### Deploy postgresql on OpenShift
 
+#### Using deployment
+
+See the script deployPostgresOnOpenShift.sh.
+
+#### Using Operator
+
 In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See [this OpenShift tutorial for more info](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
 
 The environment variables are defined as secrets under the postgresql namespace: `oc describe secret postgresql`
@@ -116,10 +122,29 @@ Type "help" for help.
 vaccinedb=>
 ```
 
+To access the database with pgadmin running locally, to the remote DB, we need to do port forwarding as:
 
-## Create customers
+```shell
+oc get pods
+oc port-forward postgres-5f449ccd95-tclb6 15432:5432
+```
 
-Here is the complete SQL you can run in psql 
+Then in the quarkus app or in env file define properties like:
+
+```shell
+export QUARKUS_DATASOURCE_USERNAME=postgres
+export QUARKUS_DATASOURCE_PASSWORD=postgres1234
+export POSTGRESQL_DBNAME=postgres
+export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:15432/postgres
+
+```
+
+## Some SQL examples
+
+### Create customers
+
+Here is the complete SQL you can run in psql
+
 ```sql
 CREATE TABLE customers (customer_id varchar(8) PRIMARY KEY, lastname varchar(40) NOT NULL, firstname varchar(40) NOT NULL, zipcode varchar(5), country varchar(40), status integer);
 INSERT INTO customers (customer_id,lastname,firstname,zipcode,country,status) VALUES
@@ -135,7 +160,7 @@ or use the command
 psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/customer.sql
 ``` 
 
-## Create products
+### Create products
 
 Products define fresh product with controlled temperature and humidity to control for the travel.
 
@@ -160,7 +185,7 @@ INSERT INTO products(product_id,description,target_temperature,target_humidity_l
 psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/product.sql
 ```
 
-## Create containers
+### Create containers
 
 ```sql
 CREATE TABLE containers (
@@ -181,7 +206,7 @@ INSERT INTO containers(container_id,model,brand,status,capacity) VALUES
 ('C05','40RH','Brand01',1,40);
 ```
 
-## Create orders
+### Create orders
 
 ```sql
 CREATE TABLE orders (
@@ -205,3 +230,7 @@ INSERT INTO ORDERS (order_id,quantity,status,creation_date,pickup_zipcode,destin
 ('O04',40,1,'2019-04-09 09:25:38.336','95050','34000',NULL,'P04','C04')
 ;
 ```
+
+## Hibernate ORM
+
+See code for [order management](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)

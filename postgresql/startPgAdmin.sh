@@ -1,0 +1,1 @@
+docker run -p 8080:80 -d -e PGADMIN_DEFAULT_EMAIL=boyerje@us.ibm.com -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
