@@ -41,7 +41,14 @@ docker run -p 8080:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSW
 
 ### Run Postgres locally
 
-Set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
+Use docker command:
+
+```shell
+docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name pgdb -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=passw0rd -e POSTGRES_DB=bettertodo -p 5432:5432 postgres:10.5
+```
+
+Ot set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
+
 
 Under the postgresql folder:
 
@@ -68,6 +75,9 @@ another way is with docker compose:
 ### Some psql commands
 
 ```shell
+# connect to the container
+docker exec -ti pgdb bash
+psql -U pguser -d dbname
 # switch to another DB
 \c dbname
 # list existing DBs
@@ -88,6 +98,8 @@ another way is with docker compose:
 \s
 # execute previoud commmand
 \g
+# Execute a SQL query
+select * from public.tablename;
 ```
 
 ### Connect to remote Postgres on IBM Cloud
@@ -129,7 +141,7 @@ oc get pods
 oc port-forward postgres-5f449ccd95-tclb6 15432:5432
 ```
 
-Then in the quarkus app or in env file define properties like:
+Then in the Quarkus app or in env file define properties like:
 
 ```shell
 export QUARKUS_DATASOURCE_USERNAME=postgres

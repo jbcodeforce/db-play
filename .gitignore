@@ -1,5 +1,6 @@
 datadir/
 postgresql/database/
 setenv.sh
-postgresql/postgresql.crt
+postgresql/*.crt
 site/
+postgresql/k8s/secret.yaml
