@@ -1,5 +1,8 @@
 # Database playground and CDC to kafka studies
 
+!!!- "info"
+    Updated 8/20/2022 - postgres content
+
 This repository supports simple studies for data base play (SQL, JPA) like db2, postgresql and mysql and change data capture to move data to kafka for example.
 
 ## Quarkus with panache and DB2

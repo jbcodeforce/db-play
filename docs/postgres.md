@@ -4,7 +4,13 @@
 
 ## Value propositions
 
-
+* Oldest open source RDBMS and advanced one, and is object-relational database
+* Large dataset
+* A lot of data types and support unstructured data too.
+* Adopted in microservice world.
+* Run in multiple process so better for horizontal scaling
+* Suited for applications with high volume of both reads and writes
+* Consider PostgreSQL for any application that might grow to enterprise scope, with complex queries and frequent write operations. 
 ## Project using postgresql
 
 * [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
@@ -47,7 +53,7 @@ Use docker command:
 docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name pgdb -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=passw0rd -e POSTGRES_DB=bettertodo -p 5432:5432 postgres:10.5
 ```
 
-Ot set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
+Or set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
 
 
 Under the postgresql folder:
@@ -69,8 +75,17 @@ another way is with docker compose:
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data/
+      - ./database:/var/lib/postgresql/data/
 ```
+
+If you need to add table creation script add the following lines in the volumes
+
+```yaml
+      # copy the sql script to create tables
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+```
+
+The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows us to place SQL files in the /docker-entrypoint-initb.d folder, and the first time the service starts, it will import and execute those SQL files.
 
 ### Some psql commands
 
@@ -153,6 +168,41 @@ export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:15432/postgres
 
 ## Some SQL examples
 
+### Exercises from medium articles
+
+* [SQL Questions with Detailed Answers (Step-by-Step)](https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b), see the DDL in the postgresql/medium1 folder.
+
+  * Start docker compose as it mount the ./medium1 folder into /tmp/scripts
+  * Create the tables in the postgres db
+
+  ```sh
+  # under /tmp/scripts
+  psql -U postgres -f create_db.sql
+  ```
+  
+  * insert records `psql -U postgres -f inser-record-1.sql`
+  * **Write an SQL query to report all customers who never order anything**. Use left join to take all the values from the left table and the common rows from the right table. The left join was performed on the Customer table because we want all the Customers with their Orders.
+
+  ```sql
+  select * from customers left join orders on customers.id = orders.customer_id;
+ 
+  id | name  | id | customer_id 
+  ----+-------+----+-------------
+    3 | Sam   |  1 |           3
+    1 | Joe   |  2 |           1
+    2 | Henry |    |            
+    4 | Max   |    |   
+
+  select name from customers left join orders on customers.id = orders.customer_id where orders.customer_id is null; 
+  ```
+
+* **Write an SQL query to report the second highest salary from the Employee table**. First ordered the salary in descending order to get the highest salary in the first and take only the unique salaries by using DISTINCT argument. The OFFSET argument is used to identify the starting point to return rows from a result set.  LIMIT clause restricts how many rows are returned.
+
+  ```sql
+  select distinct salary as secondhighestsalary from employes order by salary DESC limit 1 offset 1;
+  ```
+
+* 
 ### Create customers
 
 Here is the complete SQL you can run in psql
