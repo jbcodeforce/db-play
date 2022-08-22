@@ -296,3 +296,17 @@ INSERT INTO ORDERS (order_id,quantity,status,creation_date,pickup_zipcode,destin
 ## Hibernate ORM
 
 See code for [order management](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
+
+## High Availability
+
+For HA the principle is to try to get a second server to take over quickly in case of primary server failure, or to have several nodes to serve the same data.
+Multiple solutions exist to support HA, the synchronous one consider that a data-modifying transaction is not considered committed until all servers have committed the transaction.
+
+* **shared disk (hardware) failover**: avoids synchronization overhead by having only one copy of the database. standby server is able to mount and start the database as though it were recovering from a database crash
+* **File system - block storage** writes to the standby must be done in the same order as those on the primary.
+* **Write-Ahead Log Shipping**
+* **Logical replication** PostgreSQL logical replication constructs a stream of logical data modifications from the Write-Ahead Log. Logical replication allows replication of data changes on a per-table basis
+* **Trigger-Based Primary-Standby Replication** asynch replication from primary to standby servers
+* **SQL-Based Replication Middleware**:  a program intercepts every SQL query and sends it to one or all servers
+* **Synchronous Multimaster Replication** each server accept write requests,  modified data is transmitted from the original server to every other server before each transaction commits.
+* **Asynchronous Multimaster Replication** each server works independently, and periodically communicates with the other servers to identify conflicting transactions which can be resolved by DB admin.
