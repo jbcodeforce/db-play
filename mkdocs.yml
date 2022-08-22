@@ -7,7 +7,7 @@ nav:
   - Couchdb / Cloudand: couchdb.md
   - Mongo: mongodb.md
   - DB2: db2.md
-
+  - Return to main: https://jbcodeforce.github.io
   
 theme: 
   name: material
