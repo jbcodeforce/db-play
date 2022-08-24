@@ -13,8 +13,10 @@ theme:
   name: material
 extra_css: ["extra.css"]
 markdown_extensions:
+  - abbr
+  - attr_list
+  - md_in_html
   - admonition
-  - codehilite
   - footnotes
   - pymdownx.smartsymbols
   - pymdownx.superfences

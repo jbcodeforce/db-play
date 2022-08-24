@@ -2,6 +2,8 @@
 
 [Postgresql](https://www.postgresql.org/) is open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
 
+PostgreSQL features ACID (Atomicity, Consistent, Isolation and Durability) properties. It has indexes (primary/unique), updatable views, triggers, foreign keys (FKs) and even stored procedures (SPs)
+
 ## Value propositions
 
 * Oldest open source RDBMS and advanced one, and is object-relational database
@@ -11,6 +13,17 @@
 * Run in multiple process so better for horizontal scaling
 * Suited for applications with high volume of both reads and writes
 * Consider PostgreSQL for any application that might grow to enterprise scope, with complex queries and frequent write operations. 
+* Includes `pgbench` to be used to create data and also to stress the database. 
+
+## Architecture for HA
+
+The PostgreSQL stack is comprised of a primary and replica services. WAL records are exchanged between primary and replicas.
+
+![](./images/postgres-ha.png){ width="600" }
+
+Streaming replication is pushing changes from a primary PostgreSQL instance to its replicas.
+
+* [Product documentation on warm standby](https://www.postgresql.org/docs/current/warm-standby.html)
 ## Project using postgresql
 
 * [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
@@ -40,8 +53,8 @@ ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
 
 ```shell
 
-docker run -p 8080:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
-# http://localhost:8080/browser/
+docker run -p 5050:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
+# http://localhost:5050/browser/
 
 ```
 
@@ -61,7 +74,7 @@ Under the postgresql folder:
 * start the docker image for the database: `./startPostgresqlLocal.sh`
 * Start bash in a postgres image to access psql: `./startPsql.sh LOCAL`
 
-another way is with docker compose:
+another way is to use docker compose:
 
 ```yaml
  postgresql:
@@ -86,6 +99,41 @@ If you need to add table creation script add the following lines in the volumes
 ```
 
 The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows us to place SQL files in the /docker-entrypoint-initb.d folder, and the first time the service starts, it will import and execute those SQL files.
+### pgAdmin
+
+The docker compose includes the pgAdmin UI at address http://localhost:5050. See user and password in docker compose. Register a server by using postgres as hostname, user and password.
+
+* We can create a new database (dvdrental for example) and load definition and data from a backup which a tar file.
+
+  ![](./images/pgAdmin-restoreDB.png)
+
+* Use the `Query Tool` to execute SQL command.
+
+We can load csv file in a table. Example from cab_rides for flink study: 
+
+1. Be sure the csv file is mounted inside the docker container
+1. Create a table matching the columns of the csv with the expected types
+
+  ```sql
+  CREATE TABLE cab_rides(
+  cab_id VARCHAR(20), 
+  cab_plate VARCHAR(20), 
+  cab_type VARCHAR(20), 
+  driver_name VARCHAR(100), 
+  ongoing_trip VARCHAR(4), 
+  pickup_location VARCHAR(20), 
+  destination VARCHAR(20), 
+  passenger_count INTEGER
+  );
+  ```
+
+1. Enter a query like
+
+    ```sql
+    COPY cab_rides FROM '/tmp/data_files/cab_rides.csv' DELIMITER ',';
+    # Or if the first raw has a header
+    COPY cab_rides FROM '/' DELIMITER ',' CSV HEADER;
+    ```
 
 ### Some psql commands
 
@@ -130,7 +178,6 @@ psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
 #### Using deployment
 
 See the script deployPostgresOnOpenShift.sh.
-
 #### Using Operator
 
 In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See [this OpenShift tutorial for more info](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
@@ -155,6 +202,8 @@ To access the database with pgadmin running locally, to the remote DB, we need t
 oc get pods
 oc port-forward postgres-5f449ccd95-tclb6 15432:5432
 ```
+
+In pGAdmin efine the server entry with the connection to the port 15432.
 
 Then in the Quarkus app or in env file define properties like:
 
@@ -310,3 +359,8 @@ Multiple solutions exist to support HA, the synchronous one consider that a data
 * **SQL-Based Replication Middleware**:  a program intercepts every SQL query and sends it to one or all servers
 * **Synchronous Multimaster Replication** each server accept write requests,  modified data is transmitted from the original server to every other server before each transaction commits.
 * **Asynchronous Multimaster Replication** each server works independently, and periodically communicates with the other servers to identify conflicting transactions which can be resolved by DB admin.
+
+
+## More readings
+
+* [How to Run PostgreSQL and pgAdmin Using Docker](https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5)

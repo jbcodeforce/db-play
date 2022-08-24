@@ -18,3 +18,16 @@ services:
     volumes: 
       - ./database:/var/lib/postgresql/data
       - ./medium1:/tmp/scripts
+      - ./data_files:/tmp/data_files
+  pgadmin:
+    image: dpage/pgadmin4
+    hostname: pgagmin
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    volumes: 
+      - ./data_files:/tmp/data_files
