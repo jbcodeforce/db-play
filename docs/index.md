@@ -16,43 +16,95 @@ select * from customers;
 select distinct(name) from customers;
 select count(distinct(rate)) from films;
 
-# how many customer has the name bob and older that 18
+-- how many customer has the name bob and older that 18
 select count(*) from customer where name = 'bob' and age >= 18;
-# order on a column name
+-- order on a column name
 select name, salary from customers order by salary DESC;
 
-# limit the number of records returned
+-- limit the number of records returned
 SELECT name, salary FROM customers ORDER BY salary DESC LIMIT 10;
 
-# BETWEEN
+-- BETWEEN
 select count(*) from payment where amount between 8 and 9;
 select * from payment where payment_date between '2007-02-01' and '2007-2-15';
 
-# IN to test value in a list of options
+-- IN to test value in a list of options
 select count(*) from payment where amount in(0.99, 1.98, 1.99);
 
-# LIKE and ILIKE (case incensitive) to do pattern matching on string
+-- LIKE and ILIKE (case incensitive) to do pattern matching on string
 select * from customer where first_name ilike 'J%';
 
-# Modify the table
+-- Modify the table
 alter table customers add column email varchar(100);
 
 update customers  set email='max@email.com' where id = 4;
 
-# Aggregate min, nax, abg, cont,...
+-- Aggregate min, nax, abg, cont,...
 select round(avg(replacement_code),3) from film;
 
-# GROUP BY combined with aggregate. Who is the customer spending the most
+-- GROUP BY combined with aggregate. Who is the customer spending the most
 select customer_id, sum(amount) from  payment group by customer_id order by sum(amount) DESC;
 
-# get the day with the most transactions
+-- get the day with the most transactions
 select DATE(payment_date), sum(amount) from  payment group by  DATE(payment_date) order by sum(amount) DESC;
 
-# HAVING to allow us to use the aggregate result to filter the result along with group by
-
+-- HAVING to allow us to use the aggregate result to filter the result along with group by
+select customer_id, sum(amount) from  payment  
+where staff_id = 2 
+group by  customer_id having sum(amount) >= 110;
 ```
 
 See also [postgres study](./postgres.md)
+
+## Joins and more complex SQL
+
+Join to group records from two tables. Global structure
+
+* Inner join: 
+
+```sql
+SELECT * FROM table_a INNER JOIN table_b on table_a.column = table_b.column_b
+```
+
+* Get the top 10 customer name who do the most renting
+
+```sql
+select first_name, last_name, count(*) from payment 
+inner join customer 
+on payment.customer_id = customer.customer_id 
+group by first_name, last_name 
+order by count(*) desc limit 10;
+```
+
+* OUTER JOIN: to deal with column only in one table
+
+    ```sql
+    -- full outer join - customer never buy anything
+    select * from customer 
+    full outer join payment 
+    on payment.customer_id = customer.customer_id
+    where customer.customer_id IS null;
+    -- set of records that are in the left table, present or not in the right
+    select title, inventory_id, store_id from film 
+    left join inventory 
+    on film.film_id = inventory.film_id
+    ```
+
+    ![](./images/left-join.png)
+
+    ```sql
+    -- film in catalog not in the inventory
+    select title, inventory_id, store_id from film 
+    left join inventory 
+    on film.film_id = inventory.film_id
+    where inventory_ID IS null
+
+    -- get email address of customer leaving in california
+    select district, email from customer
+    join address
+    on address.address_id = customer.address_id
+    where address.district = 'California'
+    ```
 
 ### Exercises on the dvdrental database
 
@@ -74,7 +126,7 @@ See [postgres](./postgres.md) to restore the database schema and data from the t
 
     ```sql
     select count(distinct(district)) from address;
-    # Retrieve the list of names for those distinct districts 
+    -- Retrieve the list of names for those distinct districts 
     select distinct(district) from address where district is not null and district != '' order by district asc;
     ```
 
@@ -101,8 +153,26 @@ See [postgres](./postgres.md) to restore the database schema and data from the t
 * Customer elligible for platinium status having more than 40 transactions
 
     ```sql
+    select customer_id, count(amount) from  payment group by  customer_id having count(amount) >= 40 ORDER by count(amount);
     ```
-    
+
+* Customer who spent more than 100$ with a given staff
+
+    ```sql
+    select customer_id, sum(amount) from  payment  where staff_id = 2 group by  customer_id having sum(amount) >= 100;
+    ```
+
+* what are the film with a given actor
+
+    ```sql
+    select  title,first_name, last_name from film_actor as fa
+    inner join actor
+    on actor.actor_id = fa.actor_id
+    inner join film
+    on fa.film_id = film.film_id
+    where last_name = 'Wahlberg' and first_name = 'Nick'
+    ```
+
 ## Common queries to clean data
 ## Quarkus with panache and DB2
 

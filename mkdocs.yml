@@ -1,6 +1,7 @@
 site_name: DataBase playground with CDC 
 repo_url: https://github.com/jbcodeforce/db-play
 nav:
+  - introduction: index.md
   - Postgres: postgres.md
   - Cassandra: cassandra/readme.md
   - MySQL: mysql.md 
