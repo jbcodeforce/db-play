@@ -103,7 +103,7 @@ The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows u
 
 The docker compose includes the pgAdmin UI at address http://localhost:5050. See user and password in docker compose. Register a server by using postgres as hostname, user and password.
 
-* We can create a new database (dvdrental for example) and load definition and data from a backup which a tar file.
+* We can create a new database (dvdrental for example) and load definition and data from a backup which is a tar file.
 
   ![](./images/pgAdmin-restoreDB.png)
 
@@ -134,6 +134,8 @@ We can load csv file in a table. Example from cab_rides for flink study:
     # Or if the first raw has a header
     COPY cab_rides FROM '/' DELIMITER ',' CSV HEADER;
     ```
+
+* Can also use the backup and restore functions on the database to load data and schema: use the upload file button on top left.
 
 ### Some psql commands
 
@@ -217,6 +219,7 @@ export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:15432/postgres
 
 ## Some SQL examples
 
+See [main page for SQL examples on postgresql DB like dvdrentals, or facilities rental](./index.md).
 ### Exercises from medium articles
 
 * [SQL Questions with Detailed Answers (Step-by-Step)](https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b), see the DDL in the postgresql/medium1 folder.
@@ -251,7 +254,7 @@ export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:15432/postgres
   select distinct salary as secondhighestsalary from employes order by salary DESC limit 1 offset 1;
   ```
 
-* 
+
 ### Create customers
 
 Here is the complete SQL you can run in psql
@@ -360,7 +363,13 @@ Multiple solutions exist to support HA, the synchronous one consider that a data
 * **Synchronous Multimaster Replication** each server accept write requests,  modified data is transmitted from the original server to every other server before each transaction commits.
 * **Asynchronous Multimaster Replication** each server works independently, and periodically communicates with the other servers to identify conflicting transactions which can be resolved by DB admin.
 
+## Use python to interact with the DB
 
+* install psycopg2
+
+```
+pip install psycopg2
+```
 ## More readings
 
 * [How to Run PostgreSQL and pgAdmin Using Docker](https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5)
