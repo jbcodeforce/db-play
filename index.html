@@ -1,0 +1,964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="postgres/">
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>DataBase playground with CDC</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="extra.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#database-playground-and-cdc-to-kafka-studies" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="DataBase playground with CDC" class="md-header__button md-logo" aria-label="DataBase playground with CDC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DataBase playground with CDC
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="DataBase playground with CDC" class="md-nav__button md-logo" aria-label="DataBase playground with CDC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    DataBase playground with CDC
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          introduction
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        introduction
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sql-basic" class="md-nav__link">
+    SQL basic
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#joins-and-more-complex-sql" class="md-nav__link">
+    Joins and more complex SQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Joins and more complex SQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercises-on-the-dvdrental-database" class="md-nav__link">
+    Exercises on the dvdrental database
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intermediate-sql" class="md-nav__link">
+    Intermediate SQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Intermediate SQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#play-with-timestamp" class="md-nav__link">
+    Play with timestamp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-functions" class="md-nav__link">
+    Mathematical functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#self-join" class="md-nav__link">
+    Self-join
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-views" class="md-nav__link">
+    Add views
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-creation" class="md-nav__link">
+    Table creation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alter-table" class="md-nav__link">
+    Alter table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-queries-to-clean-data" class="md-nav__link">
+    Common queries to clean data
+  </a>
+  
+    <nav class="md-nav" aria-label="Common queries to clean data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-duplicates" class="md-nav__link">
+    Remove duplicates
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quarkus-with-panache-and-db2" class="md-nav__link">
+    Quarkus with panache and DB2
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql" class="md-nav__link">
+    Postgresql
+  </a>
+  
+    <nav class="md-nav" aria-label="Postgresql">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-cdc-on-those-table" class="md-nav__link">
+    Setting CDC on those table
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="postgres/" class="md-nav__link">
+        PostgreSQL
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cassandra/readme/" class="md-nav__link">
+        Cassandra
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mysql/" class="md-nav__link">
+        MySQL
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="couchdb/" class="md-nav__link">
+        Couchdb / Cloudand
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mongodb/" class="md-nav__link">
+        Mongo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="db2/" class="md-nav__link">
+        DB2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jbcodeforce.github.io" class="md-nav__link">
+        Return to main
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sql-basic" class="md-nav__link">
+    SQL basic
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#joins-and-more-complex-sql" class="md-nav__link">
+    Joins and more complex SQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Joins and more complex SQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercises-on-the-dvdrental-database" class="md-nav__link">
+    Exercises on the dvdrental database
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intermediate-sql" class="md-nav__link">
+    Intermediate SQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Intermediate SQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#play-with-timestamp" class="md-nav__link">
+    Play with timestamp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-functions" class="md-nav__link">
+    Mathematical functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#self-join" class="md-nav__link">
+    Self-join
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-views" class="md-nav__link">
+    Add views
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-creation" class="md-nav__link">
+    Table creation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alter-table" class="md-nav__link">
+    Alter table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-queries-to-clean-data" class="md-nav__link">
+    Common queries to clean data
+  </a>
+  
+    <nav class="md-nav" aria-label="Common queries to clean data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-duplicates" class="md-nav__link">
+    Remove duplicates
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quarkus-with-panache-and-db2" class="md-nav__link">
+    Quarkus with panache and DB2
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql" class="md-nav__link">
+    Postgresql
+  </a>
+  
+    <nav class="md-nav" aria-label="Postgresql">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-cdc-on-those-table" class="md-nav__link">
+    Setting CDC on those table
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="database-playground-and-cdc-to-kafka-studies">Database playground and CDC to kafka studies</h1>
+<div class="admonition -">
+<p class="admonition-title">info</p>
+<p>Updated 8/20/2022 - postgres content</p>
+</div>
+<p>This repository supports simple studies for data base play (SQL, JPA) like db2, postgresql and mysql and change data capture to move data to kafka for example.</p>
+<h2 id="sql-basic">SQL basic</h2>
+<p><img alt="" src="images/sql-cheat-cheet.png" /></p>
+<p>Examples of some basic commands applied to customers table.</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="k">distinct</span><span class="p">(</span><span class="n">rate</span><span class="p">))</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">films</span><span class="p">;</span>
+
+<span class="c1">-- how many customer has the name bob and older that 18</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;bob&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">18</span><span class="p">;</span>
+<span class="c1">-- order on a column name</span>
+<span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- limit the number of records returned</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- BETWEEN</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">between</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">payment_date</span><span class="w"> </span><span class="k">between</span><span class="w"> </span><span class="s1">&#39;2007-02-01&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="s1">&#39;2007-2-15&#39;</span><span class="p">;</span>
+
+<span class="c1">-- IN to test value in a list of options</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">in</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="mi">99</span><span class="p">);</span>
+
+<span class="c1">-- LIKE and ILIKE (case incensitive) to do pattern matching on string</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="k">ilike</span><span class="w"> </span><span class="s1">&#39;J%&#39;</span><span class="p">;</span>
+
+<span class="c1">-- Modify the table</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+<span class="k">update</span><span class="w"> </span><span class="n">customers</span><span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">email</span><span class="o">=</span><span class="s1">&#39;max@email.com&#39;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+
+<span class="c1">-- Aggregate min, nax, abg, cont,...</span>
+<span class="k">select</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="k">avg</span><span class="p">(</span><span class="n">replacement_code</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="p">;</span>
+
+<span class="c1">-- GROUP BY combined with aggregate. Who is the customer spending the most</span>
+<span class="k">select</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- get the day with the most transactions</span>
+<span class="k">select</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">payment_date</span><span class="p">),</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">payment_date</span><span class="p">)</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- HAVING to allow us to use the aggregate result to filter the result along with group by</span>
+<span class="k">select</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w">  </span>
+<span class="k">where</span><span class="w"> </span><span class="n">staff_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="n">customer_id</span><span class="w"> </span><span class="k">having</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">110</span><span class="p">;</span>
+</code></pre></div>
+<p>See also <a href="postgres/">postgres study</a> for information to run SQL on a local postgresql started with docker compose.</p>
+<h2 id="joins-and-more-complex-sql">Joins and more complex SQL</h2>
+<p>Join to group records from two tables. Global Inner join SQL structure looks like: build a projection of all elements in table A also present in table B. Get all columns of both table</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">table_a</span><span class="w"> </span><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">table_b</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">table_a</span><span class="p">.</span><span class="k">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table_b</span><span class="p">.</span><span class="n">column_b</span>
+</code></pre></div>
+<ul>
+<li>Get the top 10 customer name who do the most renting</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">last_name</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span>
+<span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span>
+<span class="k">on</span><span class="w"> </span><span class="n">payment</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">last_name</span><span class="w"> </span>
+<span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>
+<p>OUTER JOIN: to deal with column only in one table</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- full outer join - customer never buy anything</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span>
+<span class="k">full</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span>
+<span class="k">on</span><span class="w"> </span><span class="n">payment</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">where</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<span class="c1">-- set of records that are in the left table, present or not in the right</span>
+<span class="k">select</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">inventory_id</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="w"> </span>
+<span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">inventory</span><span class="w"> </span>
+<span class="k">on</span><span class="w"> </span><span class="n">film</span><span class="p">.</span><span class="n">film_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inventory</span><span class="p">.</span><span class="n">film_id</span>
+</code></pre></div>
+<p><img alt="" src="images/left-join.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- film in catalog not in the inventory</span>
+<span class="k">select</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">inventory_id</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="w"> </span>
+<span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">inventory</span><span class="w"> </span>
+<span class="k">on</span><span class="w"> </span><span class="n">film</span><span class="p">.</span><span class="n">film_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inventory</span><span class="p">.</span><span class="n">film_id</span>
+<span class="k">where</span><span class="w"> </span><span class="n">inventory_ID</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">null</span>
+
+<span class="c1">-- get email address of customer leaving in california</span>
+<span class="k">select</span><span class="w"> </span><span class="n">district</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customer</span>
+<span class="k">join</span><span class="w"> </span><span class="n">address</span>
+<span class="k">on</span><span class="w"> </span><span class="n">address</span><span class="p">.</span><span class="n">address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">address_id</span>
+<span class="k">where</span><span class="w"> </span><span class="n">address</span><span class="p">.</span><span class="n">district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;California&#39;</span>
+</code></pre></div>
+</li>
+</ul>
+<h3 id="exercises-on-the-dvdrental-database">Exercises on the dvdrental database</h3>
+<p>See <a href="postgres/">postgres</a> to restore the database schema and data from the tar file.</p>
+<ul>
+<li>
+<p>How many payment transactions were greater than $5.00?</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span>
+</code></pre></div>
+</li>
+<li>
+<p>How many actors have a first name that starts with the letter P?</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">first_name</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">actor</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="k">like</span><span class="w"> </span><span class="s1">&#39;P%&#39;</span><span class="p">;</span>
+</code></pre></div>
+* How many unique districts are our customers from?</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="k">distinct</span><span class="p">(</span><span class="n">district</span><span class="p">))</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">address</span><span class="p">;</span>
+<span class="c1">-- Retrieve the list of names for those distinct districts </span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="p">(</span><span class="n">district</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">district</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">district</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">district</span><span class="w"> </span><span class="k">asc</span><span class="p">;</span>
+</code></pre></div>
+</li>
+<li>
+<p>How many films have a rating of R and a replacement cost between $5 and $15?</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="w"> </span><span class="k">where</span><span class="w">  </span><span class="n">rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;R&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">replacement_cost</span><span class="w"> </span><span class="k">between</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="mi">15</span><span class="p">;</span>
+</code></pre></div>
+* How many films have the word Truman somewhere in the title?</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="k">ilike</span><span class="w"> </span><span class="s1">&#39;%truman%&#39;</span><span class="p">;</span>
+</code></pre></div>
+* which staff member processes the biggest number of transaction</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">staff_id</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="n">staff_id</span><span class="p">;</span>
+</code></pre></div>
+* what is the avg replacement cost per film rating</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">rating</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="k">avg</span><span class="p">(</span><span class="n">replacement_cost</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">film</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="n">rating</span><span class="p">;</span>
+</code></pre></div>
+* Customer elligible for platinium status having more than 40 transactions</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="n">customer_id</span><span class="w"> </span><span class="k">having</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">amount</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p>Customer who spent more than 100$ with a given staff</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="n">payment</span><span class="w">  </span><span class="k">where</span><span class="w"> </span><span class="n">staff_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">  </span><span class="n">customer_id</span><span class="w"> </span><span class="k">having</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+</code></pre></div>
+</li>
+<li>
+<p>what are the film with a given actor</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w">  </span><span class="n">title</span><span class="p">,</span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">last_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film_actor</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">fa</span>
+<span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">actor</span>
+<span class="k">on</span><span class="w"> </span><span class="n">actor</span><span class="p">.</span><span class="n">actor_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fa</span><span class="p">.</span><span class="n">actor_id</span>
+<span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">film</span>
+<span class="k">on</span><span class="w"> </span><span class="n">fa</span><span class="p">.</span><span class="n">film_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">film</span><span class="p">.</span><span class="n">film_id</span>
+<span class="k">where</span><span class="w"> </span><span class="n">last_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Wahlberg&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Nick&#39;</span>
+</code></pre></div>
+</li>
+<li>
+<p>Film returned on a specific date: uses subquery, and joins</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">film_id</span><span class="p">,</span><span class="n">title</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span>
+<span class="k">where</span><span class="w"> </span><span class="n">film_id</span><span class="w"> </span><span class="k">in</span>
+<span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">inventory</span><span class="p">.</span><span class="n">inventory_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">rental</span><span class="w"> </span>
+<span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">inventory</span>
+<span class="k">on</span><span class="w"> </span><span class="n">inventory</span><span class="p">.</span><span class="n">inventory_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rental</span><span class="p">.</span><span class="n">inventory_id</span>
+<span class="k">where</span><span class="w"> </span><span class="n">rental</span><span class="p">.</span><span class="n">return_date</span><span class="w"> </span><span class="k">between</span><span class="w"> </span><span class="s1">&#39;2005-05-29&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="s1">&#39; 2005-05-30&#39;</span><span class="p">)</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">title</span>
+</code></pre></div>
+</li>
+</ul>
+<h2 id="intermediate-sql">Intermediate SQL</h2>
+<ul>
+<li>Protect against null for value and substitute using COALESCE</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">product</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">price</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="k">coalesce</span><span class="p">(</span><span class="n">discount</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">products</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="play-with-timestamp">Play with timestamp</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">-- get the year of a date</span>
+<span class="k">select</span><span class="w"> </span><span class="k">extract</span><span class="p">(</span><span class="k">year</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment_date</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">myyear</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="p">;</span>
+<span class="c1">-- can use month, quarter, month, day</span>
+<span class="c1">-- get how old is a record</span>
+<span class="k">select</span><span class="w"> </span><span class="n">AGE</span><span class="p">(</span><span class="n">payment_date</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="p">;</span>
+<span class="c1">--</span>
+<span class="k">select</span><span class="w"> </span><span class="n">TO_CHAR</span><span class="p">(</span><span class="n">payment_date</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;MM-DD-YYYY&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">payment</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="mathematical-functions">Mathematical functions</h3>
+<p>Compute things from columns. <a href="https://www.postgresql.org/docs/9.5/functions-math.html">Examples from postgresql</a></p>
+<ul>
+<li>Get list of students who scored better than average grade</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- avg grade</span>
+<span class="k">select</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">test_scores</span>
+<span class="c1">-- solution with subquery</span>
+<span class="k">select</span><span class="w"> </span><span class="n">student</span><span class="p">,</span><span class="w"> </span><span class="n">grade</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">test_scrores</span>
+<span class="k">where</span><span class="w"> </span><span class="n">grade</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">test_scores</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="self-join">Self-join</h3>
+<p>A query in which table is joined to itself: used to compare values in a column of rows within the same table. Need to use aliases. Get the employe's name and the name of his manager:</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">emp</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">report</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">manager</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">emp</span>
+<span class="k">join</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">report</span><span class="w"> </span>
+<span class="k">on</span><span class="w"> </span><span class="n">emp</span><span class="p">.</span><span class="n">emp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">report</span><span class="p">.</span><span class="n">report_id</span><span class="w"> </span>
+</code></pre></div>
+<ul>
+<li>find the films with the same length presented as pair</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">from</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="k">length</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">film</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">f1</span>
+<span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">film</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">f2</span>
+<span class="k">on</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">film_id</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">film_id</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="k">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="k">length</span>
+</code></pre></div>
+<ul>
+<li>Compare the various amounts of films per movie rating</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">select</span>
+<span class="k">sum</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="n">rating</span>
+<span class="w">    </span><span class="k">WHEN</span><span class="w"> </span><span class="s1">&#39;R&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">R</span><span class="p">,</span>
+<span class="k">sum</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="n">rating</span>
+<span class="w">    </span><span class="k">WHEN</span><span class="w"> </span><span class="s1">&#39;PG&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">PG</span><span class="p">,</span>
+<span class="k">sum</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="n">rating</span>
+<span class="w">    </span><span class="k">WHEN</span><span class="w"> </span><span class="s1">&#39;PG-13&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">PG13</span>
+<span class="k">from</span><span class="w"> </span><span class="n">film</span>
+</code></pre></div>
+<h3 id="add-views">Add views</h3>
+<p>It is a stored query to be executed often.</p>
+<div class="highlight"><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="k">view</span><span class="w"> </span><span class="n">customer_info</span><span class="w"> </span><span class="k">as</span><span class="w"> </span>
+<span class="k">SELECT</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="c1">-- the sql to repeat</span>
+</code></pre></div>
+<h2 id="table-creation">Table creation</h2>
+<p>For primary key try to using numerical type and Postgresl sequence like:</p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">players</span><span class="w"> </span><span class="p">(</span><span class="n">player_id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="n">PRIMARY_KEY</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="nb">smallint</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+</code></pre></div>
+<p>Use CHECK to put constraint on column and between column</p>
+<div class="highlight"><pre><span></span><code><span class="n">hire_date</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="p">(</span><span class="n">hire_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">birthday</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="alter-table">Alter table</h2>
+<div class="highlight"><pre><span></span><code><span class="c1">-- drop a constraint</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">people</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span>
+</code></pre></div>
+<p><a href="https://www.postgresql.org/docs/9.5/sql-altertable.html">Alter table in postgresql - doc</a></p>
+<h2 id="common-queries-to-clean-data">Common queries to clean data</h2>
+<h3 id="remove-duplicates">Remove duplicates</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">-- search for same transaction</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">transaction_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="n">transaction_id</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">Transaction__Table</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">transaction_id</span>
+<span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="n">transaction_id</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">-- </span>
+</code></pre></div>
+<h2 id="quarkus-with-panache-and-db2">Quarkus with panache and DB2</h2>
+<p>The project is <a href="https://github.com/jbcodeforce/eda-kconnect-lab/tree/master/inventory-app">inventory app</a> and the interesting part is the property file</p>
+<div class="highlight"><pre><span></span><code><span class="na">quarkus.datasource.username</span><span class="o">=</span><span class="s">cbm39816</span>
+<span class="na">quarkus.datasource.password</span><span class="o">=</span>
+<span class="na">quarkus.datasource.url</span><span class="o">=</span><span class="s">jdbc:db2://dashdb-txn-sbox-yp-dal09-03.services.dal.bluemix.net:50001/BLUDB:sslConnection=true;</span>
+<span class="na">quarkus.datasource.max-size</span><span class="o">=</span><span class="s">8</span>
+<span class="na">quarkus.datasource.min-size</span><span class="o">=</span><span class="s">2</span>
+<span class="na">quarkus.datasource.driver</span><span class="o">=</span><span class="s">com.ibm.db2.jcc.DB2Driver</span>
+<span class="na">quarkus.hibernate-orm.dialect</span><span class="o">=</span><span class="s">org.hibernate.dialect.DB2Dialect</span>
+<span class="na">quarkus.hibernate-orm.database.generation</span><span class="o">=</span><span class="s">drop-and-create</span>
+<span class="na">quarkus.hibernate-orm.database.default-schema</span><span class="o">=</span><span class="s">CBM39816</span>
+<span class="na">quarkus.hibernate-orm.log.sql</span><span class="o">=</span><span class="s">true</span>
+<span class="na">quarkus.hibernate-orm.sql-load-script</span><span class="o">=</span><span class="s">import.sql</span>
+<span class="na">quarkus.smallrye-openapi.path</span><span class="o">=</span><span class="s">/inventory/swagger</span>
+<span class="na">quarkus.swagger-ui.always-include</span><span class="o">=</span><span class="s">true</span>
+</code></pre></div>
+<h2 id="postgresql">Postgresql</h2>
+<p>See <a href="postgres/">dedicated note</a>.</p>
+<h3 id="setting-cdc-on-those-table">Setting CDC on those table</h3>
+<p>The Kafka connector is deployed as part of Strimzi. </p>
+<p>TBC</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

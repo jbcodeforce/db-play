@@ -1,0 +1,902 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../postgres/">
+      
+      
+        <link rel="next" href="../../mysql/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Cassandra - DataBase playground with CDC</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cassandra-summary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="DataBase playground with CDC" class="md-header__button md-logo" aria-label="DataBase playground with CDC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DataBase playground with CDC
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Cassandra
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="DataBase playground with CDC" class="md-nav__button md-logo" aria-label="DataBase playground with CDC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    DataBase playground with CDC
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../postgres/" class="md-nav__link">
+        PostgreSQL
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Cassandra
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Cassandra
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#concepts" class="md-nav__link">
+    Concepts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cassandra-deployment" class="md-nav__link">
+    Cassandra deployment
+  </a>
+  
+    <nav class="md-nav" aria-label="Cassandra deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploying-on-docker-edge-for-desktop-kubernetes" class="md-nav__link">
+    Deploying on "Docker Edge for desktop" kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-on-kubernetes" class="md-nav__link">
+    Deployment on Kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-cassandra-cluster" class="md-nav__link">
+    Removing cassandra cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    Performance considerations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-availability" class="md-nav__link">
+    High availability
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code" class="md-nav__link">
+    Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cassandra-client-api" class="md-nav__link">
+    Cassandra client API
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#define-assets-table-structure-with-cql" class="md-nav__link">
+    Define Assets Table Structure with CQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Define Assets Table Structure with CQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#some-useful-cql-commands" class="md-nav__link">
+    Some useful CQL commands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cassandra-java-api-to-create-objects" class="md-nav__link">
+    Use Cassandra Java API to create objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issues" class="md-nav__link">
+    Issues
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-readings" class="md-nav__link">
+    Future Readings
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mysql/" class="md-nav__link">
+        MySQL
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../couchdb/" class="md-nav__link">
+        Couchdb / Cloudand
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongodb/" class="md-nav__link">
+        Mongo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db2/" class="md-nav__link">
+        DB2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jbcodeforce.github.io" class="md-nav__link">
+        Return to main
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#concepts" class="md-nav__link">
+    Concepts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cassandra-deployment" class="md-nav__link">
+    Cassandra deployment
+  </a>
+  
+    <nav class="md-nav" aria-label="Cassandra deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploying-on-docker-edge-for-desktop-kubernetes" class="md-nav__link">
+    Deploying on "Docker Edge for desktop" kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-on-kubernetes" class="md-nav__link">
+    Deployment on Kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-cassandra-cluster" class="md-nav__link">
+    Removing cassandra cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    Performance considerations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-availability" class="md-nav__link">
+    High availability
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code" class="md-nav__link">
+    Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cassandra-client-api" class="md-nav__link">
+    Cassandra client API
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#define-assets-table-structure-with-cql" class="md-nav__link">
+    Define Assets Table Structure with CQL
+  </a>
+  
+    <nav class="md-nav" aria-label="Define Assets Table Structure with CQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#some-useful-cql-commands" class="md-nav__link">
+    Some useful CQL commands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cassandra-java-api-to-create-objects" class="md-nav__link">
+    Use Cassandra Java API to create objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issues" class="md-nav__link">
+    Issues
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-readings" class="md-nav__link">
+    Future Readings
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="cassandra-summary">Cassandra Summary</h1>
+<p>In this article we do a quick summary of <a href="http://cassandra.apache.org/">Cassandra</a> capabilities in the context of data persistence and how to deploy it on Openshift.</p>
+<p>Cassandra addresses linear scalability and high availability to persist a huge data set. It uses replication to multiple nodes managed in cluster, even deployable  across datacenters.</p>
+<h2 id="concepts">Concepts</h2>
+<p>Cassandra uses a ring based Distributed Hash Table servers but without finder or routing tables. Keys are stored as in DHT to the next server with key &gt; key id, replicated on the 2 next servers too.  There is one ring per data center.  The coordinator forward the query to a subset of replicas for a particular key. Every server that could be a coordinator needs to know the 'key to server' assignment.<br />
+Two data placement strategies:</p>
+<ul>
+<li>simple strategy: use two kinds of partitioners:<ul>
+<li>random, which does chord like hashing</li>
+<li>byte ordered, which assigns range of keys to servers: easier for range queries</li>
+</ul>
+</li>
+<li>network topology strategy for multiple data centers: it supports different configuration, like 2 replicas of each key per decision center.</li>
+</ul>
+<p>First  replica is placed according to the Partitioner logic, and make sure to store the other replica to different rack, to avoid a rack failure will make all copies of key not available.  Go around the ring clockwise until encountering a server in a different rack.</p>
+<p><em>Snitches: is a mechanism to map ip addresses to racks in DC. Cassandra support such configuration.</em></p>
+<p>Client sends write to one coordinator node in Cassandra cluster. Coordinator may per key or per client or per query. It uses partitioner to send query to all replica nodes responsible for key. The process to write should be fast and not involving lock on resource. It should not involve read and disk seeks.
+Write operations are always successful, even in case of failure: the coordinator uses the Hinted Handoff mechanism (it assumes ownership of the key until being sure it is supported by the replica), as it writes to other replicas and keeps the write locally until the down replica comes back up. If all the replicas are done, the Coordinator buffers writes for few hours.</p>
+<p>Here are some key concepts of Cassandra to keep in mind for this implementation:</p>
+<ul>
+<li><strong>Cluster</strong>:  the set of nodes potentially deployed cross data centers, organized as a 'ring'.</li>
+<li><strong>Keyspace</strong>: like a schema in SQL DB. It is the higher abstraction object to contain data. The important keyspace attributes are the Replication Factor, the Replica Placement Strategy and the Column Families.</li>
+<li><strong>Column Family</strong>: they are like tables in Relational Databases. Each Column Family contains a collection of rows which are represented by a Map<RowKey, SortedMap\<ColumnKey, ColumnValue>>. The key gives the ability to access related data together</li>
+<li><strong>Column</strong> – A column is a data structure which contains a column name, a value and a timestamp. The columns and the number of columns in each row may vary in contrast with a relational database where data are well structured.</li>
+</ul>
+<h2 id="cassandra-deployment">Cassandra deployment</h2>
+<h3 id="deploying-on-docker-edge-for-desktop-kubernetes">Deploying on "Docker Edge for desktop" kubernetes</h3>
+<p>For development work we use the <strong>Docker Edge</strong> version of Docker and enable Kubernetes (see this <a href="https://docs.docker.com/docker-for-mac/kubernetes/">note from docker web site</a>).</p>
+<p>Then you can use our script <code>deployCassandra.sh</code> under the <code>scripts</code> folder BUT be sure to adapt the yaml settings in the folder <code>cassandra</code> to limit the replicas for what you need. The steps are the same as for kubernetes deployment as described in next section.</p>
+<h3 id="deployment-on-kubernetes">Deployment on Kubernetes</h3>
+<p>Deploying stateful distributed applications like Cassandra is not easy. You will leverage the kubernetes cluster to support high availability and deploy c7a to the worker nodes.</p>
+<p><img alt="" src="../cassandra-k8s.png" /></p>
+<p>We also recommend to be familiar with <a href="https://kubernetes.io/docs/tutorials/stateful-application/cassandra/">this kubernetes tutorial on how to deploy Cassandra with Stateful Sets</a>.</p>
+<p>You can reuse the yaml config files under <code>cassandra</code> folder to configure a Service to expose Cassandra externally, create static persistence volumes, and use the StatefulSet to deploy Cassandra image.</p>
+<p>You can also use our script <code>deployCassandra.sh</code> under the <code>scripts</code> folder to automate this deployment.</p>
+<p>To summarize the steps are:</p>
+<ol>
+<li>
+<p>Connect to kubernetes or Openshift:  </p>
+<p><em>We are using one namespace called 'greencompute'.</em></p>
+</li>
+<li>
+<p>Create Cassandra headless service, so application can access via KubeDNS. If you do wish to connect an application to cassandra, use the KubeDNS value of <code>cassandra-svc.greencompute.svc.cluster.local</code>, or <code>cassandra-svc</code> or <code>cassandra-0</code>. The alternate solution is to use <em>Ingress</em> rule and set a hostname as cassandra.green.case. The <code>casssandara-ingress.yml</code> file defines such Ingress.</p>
+<div class="highlight"><pre><span></span><code>$ kubectl apply -f cassandra/cassandra-service.yaml --namespace greencompute
+$ kubectl get svc cassandra-svc -n greencompute
+
+  NAME        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+cassandra-svc   ClusterIP    None          &lt;none&gt;        9042/TCP   12h
+</code></pre></div>
+</li>
+<li>
+<p>Create static persistence volumes to keep data for cassandra: <em>you need the same number of PV as there are cassandra nodes (here 3 nodes)</em></p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>cassandra/cassandra-volumes.yaml
+
+$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pv<span class="w"> </span>-n<span class="w"> </span>greencompute<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>cassandra
+<span class="w">  </span>cassandra-data-1<span class="w">  </span>1Gi<span class="w">  </span>RWO<span class="w">  </span>Recycle<span class="w">   </span>Bound<span class="w">       </span>greencompute/cassandra-data-cassandra-0<span class="w"> </span>12h
+<span class="w">  </span>cassandra-data-2<span class="w">  </span>1Gi<span class="w">  </span>RWO<span class="w">  </span>Recycle<span class="w">   </span>Available<span class="w">                                           </span>12h
+<span class="w">  </span>cassandra-data-3<span class="w">  </span>1Gi<span class="w">  </span>RWO<span class="w">  </span>Recycle<span class="w">   </span>Available<span class="w">   </span>
+</code></pre></div>
+<ol>
+<li>Create the StatefulSet, which defines a cassandra ring of 3 nodes. The <a href="https://hub.docker.com/_/cassandra/">cassandra image</a> used is coming from dockerhub public repository.</li>
+</ol>
+<p>If you are using your own namespace name or you change the service name, modify the service name and namespace used in the yaml :</p>
+<div class="highlight"><pre><span></span><code><span class="nt">env</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CASSANDRA_SEEDS</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cassandra-0.cassandra-svc.greencompute.svc.cluster.local</span>
+</code></pre></div>
+<p>Cassandra seed is used for two purposes:</p>
+<ul>
+<li><strong>Node discovery</strong>: when a new cassandra node is added (which means when deployed on k8s, a new pod instance added by increasing the replica number), it needs to find the cluster, so here the seed is set the svc name</li>
+<li><strong>Assist on gossip convergence</strong>: by having all of the nodes in the cluster gossip regularly with the same set of seeds. It ensures changes are propagated regularly.</li>
+</ul>
+<p>Here it needs to reference the headless service we defined for Cassandra deployment.</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span>$<span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>cassandra/cassandra-statefulset.yaml<span class="w">  </span>-n<span class="w"> </span>greencompute
+<span class="w">  </span>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>statefulset<span class="w"> </span>-n<span class="w"> </span>greencompute
+
+<span class="w">  </span>NAME<span class="w">                                        </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>AGE
+<span class="w">  </span>cassandra<span class="w">                                   </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">         </span>12h
+</code></pre></div>
+<ul>
+<li>Connect to the pod to assess the configuration is as expected. </li>
+</ul>
+<div class="highlight"><pre><span></span><code>  $ kubectl get pods -o wide -n greencompute
+  NAME          READY     STATUS    RESTARTS   AGE       IP              NODE
+  cassandra-0   0/1       Running   0          2m        192.168.35.93   169.61.151.164
+
+  $ kubectl exec -tin greencompute cassandra-0 -- nodetool status
+
+  Datacenter: DC1
+  ===============
+  Status=Up/Down
+  |/ State=Normal/Leaving/Joining/Moving
+  --  Address          Load       Tokens        Owns (effective)  Host ID                               Rack
+  UN  192.168.212.174  257.29 KiB  256          100.0%            ea8acc49-1336-4941-b122-a4ef711ca0e6  Rack1
+</code></pre></div>
+<p>The string "UN", means for Up and Normal state.</p>
+<h3 id="removing-cassandra-cluster">Removing cassandra cluster</h3>
+<p>We are providing a script for that <code>./scripts/deleteCassandra.sh</code> which remove the stateful, the pv, pvc and service</p>
+<div class="highlight"><pre><span></span><code>grace=$(kubectl get po cassandra-0 -o=jsonpath=&#39;{.spec.terminationGracePeriodSeconds}&#39;) \
+    &amp;&amp; kubectl delete statefulset -l app=cassandra -n greencompute \
+    &amp;&amp; echo &quot;Sleeping $grace&quot; \
+    &amp;&amp; sleep $grace \
+    &amp;&amp; kubectl delete pvc,pv,svc -l app=cassandra
+</code></pre></div>
+<h3 id="performance-considerations">Performance considerations</h3>
+<p>The resource requirements for higher performance are:</p>
+<ul>
+<li>A minimum of 32GB RAM (JVM + Linux memory buffers to cache SSTable) + <code>memory.available</code> defined in Kubernetes Eviction policy + Resources needed by k8s components that run on every worker node (e.g. proxy)</li>
+<li>A minimum of 8 processor cores per Cassandra Node with 2 CPUs per core (16 vCPU in a VM)</li>
+<li>4-8 GB JVM heap, recommend trying to keep heaps limited to 4 GB to minimize garbage collection pauses caused by large heaps.</li>
+<li>Cassandra needs local storage to get best performance. Avoid to use distributed storage, and prefer hostPath or localstorage. With distributed storage like a Glusterfs cluster you may have 9 replicas (3x Cassandra replica factor which is usually 3). </li>
+</ul>
+<p>Cassandra nodes tend to be IO bound rather than CPU bound:</p>
+<ul>
+<li>Upper limit of data per node &lt;= 1.5 TB for spinning disk and &lt;= 4 TB for SSD</li>
+<li>Increase the number of nodes to keep the data per node at or below the recommended capacity</li>
+<li>Actual data per node determined by data throughput, for high throughput, you need to limit the data per node.</li>
+</ul>
+<p>The use of Vnodes is generally  considered  to be a good practice as they eliminate the need to perform manual token assignment, distribute workload across all nodes in a cluster when nodes are added or removed. It helps rebuilding dead nodes faster.
+Vnode reduces the size of SSTables which can improve read performance. Cassandra best practices set the number of tokens per Cassandra node to 256.</p>
+<p>Avoid getting multiple node instances on the same physical host, so use <code>podAntiAffinity</code> in the StatefulSet spec.</p>
+<div class="highlight"><pre><span></span><code>spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            topologyKey: &quot;kubernetes.io/hostname&quot;
+</code></pre></div>
+<h2 id="high-availability">High availability</h2>
+<p>Within a cluster the number of replicas in the statefulset is at least 3 but can be increased to 5 when code maintenance is needed.
+The choice for persistence storage is important, and the backup and restore strategy of the storage area network used.</p>
+<p>When creating connection to persist data into a keyspace, you specify the persistence strategy and number of replicas at the client code level. Mostly using properties file.</p>
+<div class="highlight"><pre><span></span><code>p.setProperty(CASSANDRA_STRATEGY, &quot;SimpleStrategy&quot;);
+p.setProperty(CASSANDRA_REPLICAS, &quot;3&quot;);
+</code></pre></div>
+<p>When deploying on Staging or test cluster, ring topology, SimpleStrategy is enough: additional replicas are placed on the next nodes in the ring moving clockwise without considering topology, such as rack or datacenter location: a cluster can spread over availability zones and datacenters.
+For HA and production deployment NetworkTopologyStrategy is needed: replicas are placed in the same datacenter but on distinct racks.</p>
+<p>For the number of replicas, it is recommended to use 3 per datacenter.</p>
+<p>The <code>spec.env</code> parameters in the statefulset defines the datacenter name and rack name too.</p>
+<h2 id="code">Code</h2>
+<p>We have done two implementations for persisting <code>asset</code> data into Cassandra, one using Cassandra client API and one with SpringBoot cassandra repository API.</p>
+<h2 id="cassandra-client-api">Cassandra client API</h2>
+<p>The code is under <code>refarch-reefer-ml</code> project and can be loaded into Eclipse. This component is deployed as container inside a kubernetes cluster like Openshift. See code explanation, how to build and run in <a href="">this note</a></p>
+<p>In the pom.xml we added the following dependencies to get access to the core driver API:</p>
+<p><div class="highlight"><pre><span></span><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.datastax.cassandra&lt;/groupId&gt;
+  &lt;artifactId&gt;cassandra-driver-core&lt;/artifactId&gt;
+  &lt;version&gt;3.1.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre></div>
+The DAO code is <code>CassandraRepo.java</code> and it basically connects to the Cassandra cluster when the DAO class is created...
+<div class="highlight"><pre><span></span><code>Builder b = Cluster.builder().addContactPoints(endpoints);
+cluster = b.build();
+session = cluster.connect();
+</code></pre></div>
+The trick is in the endpoints name. We externalize this setting in a configuration properties and use the cassandra-svc name when deploy in ICP.</p>
+<p>It is possible also to create keyspace and tables by API if they do not exist by building CQL query string and use the session.execute(aquery) method. See <a href="#use-cassandra-java-api-to-create-objects">this section below</a></p>
+<h2 id="define-assets-table-structure-with-cql">Define Assets Table Structure with CQL</h2>
+<p>Using the csql tool we can create space and table. To use <code>cqlsh</code> connect to cassandra pod:
+<div class="highlight"><pre><span></span><code>$ kubectl exec -tin greencompute cassandra-0 cqlsh
+</code></pre></div>
+You are now in cqlsh shell and you can define assets table under keyspace <code>assetmonitoring</code>:</p>
+<p><div class="highlight"><pre><span></span><code>sqlsh&gt;  create keyspace assetmonitoring with replication={&#39;class&#39;:&#39;SimpleStrategy&#39;, &#39;replication_factor&#39;:1};
+sqlsh&gt; use assetmonitoring;
+sqlsh:assetmonitoring&gt; create TABLE assets(id text PRIMARY KEY, os text, type text, ipaddress text, version text, antivirus text, current double, rotation int, pressure int, temperature int, latitude double, longitude double);
+</code></pre></div>
+Add an index on the asset operating system field and one on type.
+<div class="highlight"><pre><span></span><code>CREATE INDEX ON assetmonitoring.assets (os);
+CREATE INDEX ON assetmonitoring.assets (type);
+</code></pre></div></p>
+<p>If you reconnect to the pod using cqlsh you can assess the table using
+<div class="highlight"><pre><span></span><code>describe tables
+
+describe assets
+</code></pre></div></p>
+<h3 id="some-useful-cql-commands">Some useful CQL commands</h3>
+<div class="highlight"><pre><span></span><code># See the table schema
+cqlsh&gt; describe table assets;
+
+# modify a table structure adding a column
+cqlsh&gt; alter table assets add flowRate bigint;
+
+# change column type. example the name column:
+cqlsh&gt; alter table assets alter name type text;
+
+# list content of a table  
+cqlsh&gt; select id,ipaddress,latitude,longitude from assets;
+
+# delete a table
+cqlsh&gt; drop table if exists assets;
+</code></pre></div>
+<h3 id="use-cassandra-java-api-to-create-objects">Use Cassandra Java API to create objects</h3>
+<ul>
+<li>Create keyspace:
+ <div class="highlight"><pre><span></span><code><span class="n">StringBuilder</span><span class="w"> </span><span class="n">sb</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">StringBuilder</span><span class="p">(</span><span class="s">&quot;CREATE KEYSPACE IF NOT EXISTS &quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="n">keyspaceName</span><span class="p">).</span><span class="na">append</span><span class="p">(</span><span class="s">&quot; WITH replication = {&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;&#39;class&#39;:&#39;&quot;</span><span class="p">).</span><span class="na">append</span><span class="p">(</span><span class="n">replicationStrategy</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;&#39;,&#39;replication_factor&#39;:&quot;</span><span class="p">).</span><span class="na">append</span><span class="p">(</span><span class="n">replicationFactor</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;};&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sb</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span>
+<span class="w">    </span><span class="n">session</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+</code></pre></div></li>
+<li>
+<p>Create table
+ <div class="highlight"><pre><span></span><code><span class="n">StringBuilder</span><span class="w"> </span><span class="n">sb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StringBuilder</span><span class="p">(</span><span class="s">&quot;CREATE TABLE IF NOT EXISTS &quot;</span><span class="p">)</span>
+<span class="w">         </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="n">TABLE_NAME</span><span class="p">).</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;(&quot;</span><span class="p">)</span>
+<span class="w">         </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;id uuid PRIMARY KEY, &quot;</span><span class="p">)</span>
+<span class="w">         </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;temperature text,&quot;</span><span class="p">)</span>
+<span class="w">         </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;latitude text,&quot;</span><span class="p">)</span>
+<span class="w">         </span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&quot;longitude text);&quot;</span><span class="p">);</span>
+
+<span class="w">       </span><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sb</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span>
+<span class="w">       </span><span class="n">session</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>insert data: there is no update so if you want a strict insert you need to add "IF NOT EXISTS" condition in the query.</p>
+</li>
+</ul>
+<h3 id="issues">Issues</h3>
+<ol>
+<li>When having the cassandra replica set to more than two, the cassandra operations are not happenning in parallel on both the pods at the same time. Some operations are happenning on one node and some others on the other node. Due to this, inconsistent data is retrieved since both the tables do not have the same data.</li>
+</ol>
+<h2 id="future-readings">Future Readings</h2>
+<ul>
+<li><a href="https://www.ibm.com/developerworks/library/ba-multi-data-center-cassandra-cluster-kubernetes-platform/index.html">10 steps to set up a multi-data center Cassandra cluster on a Kubernetes platform</a></li>
+<li><a href="https://github.com/IBM/Scalable-Cassandra-deployment-on-Kubernetes">IBM Article: Scalable multi-node Cassandra deployment on Kubernetes Cluster</a></li>
+<li><a href="https://blog.deimos.fr/2018/06/24/running-cassandra-on-kubernetes/">Running Cassandra on Kubernetes</a></li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>
