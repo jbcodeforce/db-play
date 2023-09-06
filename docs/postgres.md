@@ -24,39 +24,15 @@ The PostgreSQL stack is comprised of a primary and replica services. WAL records
 Streaming replication is pushing changes from a primary PostgreSQL instance to its replicas.
 
 * [Product documentation on warm standby](https://www.postgresql.org/docs/current/warm-standby.html)
-## Project using postgresql
+
+### My Projects using postgresql
 
 * [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
 * In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  
+* [Autonomous Car Ride]()
 
 ## Create Postgres databases
 
-### Create an instance of Postgresql on IBM Cloud
-
-No need to reinvent the [product documentation](https://cloud.ibm.com/services/databases-for-postgresql) to create one instance. A summary of what needs to be done
-
-* Set user admin password:
-
-```
-ibmcloud cdb user-password <instance name> admin alongpassw0rd
-```
-
-* Get URL to connect to the service: URL, Port number
-
-* Get SSL certificate for client using ibm cloud CLI
-
-```shell
-ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
-```
-
-* Use `pgAdmin4` to administer postgres: add a server and complete the ULR, port, admin as user and the password set in previous step.
-
-```shell
-
-docker run -p 5050:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
-# http://localhost:5050/browser/
-
-```
 
 ### Run Postgres locally
 
@@ -99,6 +75,7 @@ If you need to add table creation script add the following lines in the volumes
 ```
 
 The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows us to place SQL files in the /docker-entrypoint-initb.d folder, and the first time the service starts, it will import and execute those SQL files.
+
 ### pgAdmin
 
 The docker compose includes the pgAdmin UI at address http://localhost:5050. See user and password in docker compose. Register a server by using postgres as hostname, user and password.
@@ -373,3 +350,35 @@ pip install psycopg2
 ## More readings
 
 * [How to Run PostgreSQL and pgAdmin Using Docker](https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5)
+
+## AWS Aurora
+
+
+## IBM Cloud
+
+### Create an instance of Postgresql on IBM Cloud
+
+No need to reinvent the [product documentation](https://cloud.ibm.com/services/databases-for-postgresql) to create one instance. A summary of what needs to be done
+
+* Set user admin password:
+
+```
+ibmcloud cdb user-password <instance name> admin alongpassw0rd
+```
+
+* Get URL to connect to the service: URL, Port number
+
+* Get SSL certificate for client using ibm cloud CLI
+
+```shell
+ibmcloud cdb deployment-cacert Green-DB-PostgreSQL > postgres.crt
+```
+
+* Use `pgAdmin4` to administer postgres: add a server and complete the ULR, port, admin as user and the password set in previous step.
+
+```shell
+
+docker run -p 5050:80 -d -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=alongpassw0rd dpage/pgadmin4
+# http://localhost:5050/browser/
+
+```

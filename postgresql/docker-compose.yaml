@@ -29,5 +29,5 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "5050:80"
-    volumes: 
+    volumes:
       - ./data_files:/tmp/data_files
