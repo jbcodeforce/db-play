@@ -1,11 +1,16 @@
-# Database playground and CDC to kafka studies
+# Database playground
 
 !!!- "info"
-    Updated 8/20/2022 - postgres content
+    - Updated 8/20/2022 - postgres content
+    - Update 11/2024
 
-This repository supports simple studies for data base play (SQL, JPA) like db2, postgresql and mysql and change data capture to move data to kafka for example.
+This repository supports simple studies for database playground (SQL, JPA) using technologies like db2, postgresql or mysql. It is completed by study of some change data capture to move data from database to kafka topic.
 
-## SQL basic
+## SQL basics
+
+In the SQL language we can differentiate the **Data Definition Language (DDL)**, which are statements to create, change, or deleting tables, from **Data Modification Language (DML)**, which are used to define statements to modify the data and to do not change the metadata.
+
+The figure below illustrates some common basic patterns.
 
 ![](./images/sql-cheat-cheet.png)
 
@@ -16,9 +21,9 @@ select * from customers;
 select distinct(name) from customers;
 select count(distinct(rate)) from films;
 
--- how many customer has the name bob and older that 18
+-- how many customer has the name bob and are older than 18
 select count(*) from customer where name = 'bob' and age >= 18;
--- order on a column name
+-- sort by salary
 select name, salary from customers order by salary DESC;
 
 -- limit the number of records returned
@@ -31,15 +36,15 @@ select * from payment where payment_date between '2007-02-01' and '2007-2-15';
 -- IN to test value in a list of options
 select count(*) from payment where amount in(0.99, 1.98, 1.99);
 
--- LIKE and ILIKE (case incensitive) to do pattern matching on string
+-- LIKE and ILIKE (case non-sensitive) to do pattern matching on string
 select * from customer where first_name ilike 'J%';
 
 -- Modify the table
 alter table customers add column email varchar(100);
-
+-- update a unique record
 update customers  set email='max@email.com' where id = 4;
 
--- Aggregate min, nax, abg, cont,...
+-- Aggregate min, max, avg, count,...
 select round(avg(replacement_code),3) from film;
 
 -- GROUP BY combined with aggregate. Who is the customer spending the most
@@ -55,54 +60,6 @@ group by  customer_id having sum(amount) >= 110;
 ```
 
 See also [postgres study](./postgres.md) for information to run SQL on a local postgresql started with docker compose.
-
-## Joins and more complex SQL
-
-Join to group records from two tables. Global Inner join SQL structure looks like: build a projection of all elements in table A also present in table B. Get all columns of both table
-
-```sql
-SELECT * FROM table_a INNER JOIN table_b on table_a.column = table_b.column_b
-```
-
-* Get the top 10 customer name who do the most renting
-
-```sql
-select first_name, last_name, count(*) from payment 
-inner join customer 
-on payment.customer_id = customer.customer_id 
-group by first_name, last_name 
-order by count(*) desc limit 10;
-```
-
-* OUTER JOIN: to deal with column only in one table
-
-    ```sql
-    -- full outer join - customer never buy anything
-    select * from customer 
-    full outer join payment 
-    on payment.customer_id = customer.customer_id
-    where customer.customer_id IS null;
-    -- set of records that are in the left table, present or not in the right
-    select title, inventory_id, store_id from film 
-    left join inventory 
-    on film.film_id = inventory.film_id
-    ```
-
-    ![](./images/left-join.png)
-
-    ```sql
-    -- film in catalog not in the inventory
-    select title, inventory_id, store_id from film 
-    left join inventory 
-    on film.film_id = inventory.film_id
-    where inventory_ID IS null
-
-    -- get email address of customer leaving in california
-    select district, email from customer
-    join address
-    on address.address_id = customer.address_id
-    where address.district = 'California'
-    ```
 
 ### Exercises on the dvdrental database
 
@@ -133,22 +90,26 @@ See [postgres](./postgres.md) to restore the database schema and data from the t
     ```sql
     select count(*) from film where  rating = 'R' and replacement_cost between 5 and 15;
     ```
+
 * How many films have the word Truman somewhere in the title?
 
     ```sql
     select count(*) from film where title ilike '%truman%';
     ```
-* which staff member processes the biggest number of transaction
+
+* Which staff member processes the biggest number of transactions?
 
     ```sql
     select staff_id, count(amount) from  payment group by  staff_id;
     ```
-* what is the avg replacement cost per film rating
+
+* What is the avg replacement cost per film rating?
 
     ```sql
     select rating, round(avg(replacement_cost),2) from  film group by  rating;
     ```
-* Customer elligible for platinium status having more than 40 transactions
+
+* Customer eligible for platinum status having more than 40 transactions
 
     ```sql
     select customer_id, count(amount) from  payment group by  customer_id having count(amount) >= 40 ORDER by count(amount);
@@ -158,29 +119,6 @@ See [postgres](./postgres.md) to restore the database schema and data from the t
 
     ```sql
     select customer_id, sum(amount) from  payment  where staff_id = 2 group by  customer_id having sum(amount) >= 100;
-    ```
-
-* what are the film with a given actor
-
-    ```sql
-    select  title,first_name, last_name from film_actor as fa
-    inner join actor
-    on actor.actor_id = fa.actor_id
-    inner join film
-    on fa.film_id = film.film_id
-    where last_name = 'Wahlberg' and first_name = 'Nick'
-    ```
-
-* Film returned on a specific date: uses subquery, and joins
-
-    ```sql
-    select film_id,title from film
-    where film_id in
-    (select inventory.inventory_id from rental 
-    inner join inventory
-    on inventory.inventory_id = rental.inventory_id
-    where rental.return_date between '2005-05-29' and ' 2005-05-30')
-    ORDER BY title
     ```
 
 ## Intermediate SQL

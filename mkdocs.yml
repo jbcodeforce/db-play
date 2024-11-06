@@ -1,13 +1,15 @@
-site_name: DataBase playground with CDC 
+site_name: DataBase playground
 repo_url: https://github.com/jbcodeforce/db-play
 nav:
-  - introduction: index.md
+  - Introduction: index.md
+  - SQL: sql.md
   - PostgreSQL: postgres.md
   - Cassandra: cassandra/readme.md
   - MySQL: mysql.md 
-  - Couchdb / Cloudand: couchdb.md
+  - Couchdb / Cloudant: couchdb.md
   - Mongo: mongodb.md
   - DB2: db2.md
+  - Data architecture: https://jbcodeforce.github.io/data/
   - Return to main: https://jbcodeforce.github.io
   
 theme: 
