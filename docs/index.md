@@ -14,6 +14,8 @@ The figure below illustrates some common basic patterns.
 
 ![](./images/sql-cheat-cheet.png)
 
+For deeper tutorial see the [sqltutorial.org](https://www.sqltutorial.org/) site. The Employee DDL is in DDL folder.
+
 Examples of some basic commands applied to customers table.
 
 ```sql
