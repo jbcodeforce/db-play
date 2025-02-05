@@ -1,0 +1,1363 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../sql/">
+      
+      
+        <link rel="next" href="../cassandra/readme/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>PostgreSQL - DataBase playground</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#postgresql" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DataBase playground" class="md-header__button md-logo" aria-label="DataBase playground" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DataBase playground
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PostgreSQL
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DataBase playground" class="md-nav__button md-logo" aria-label="DataBase playground" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    DataBase playground
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jbcodeforce/db-play" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    PostgreSQL
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    PostgreSQL
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#value-propositions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Value propositions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-for-ha" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture for HA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture for HA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#my-projects-using-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      My Projects using postgresql
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-postgres-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Postgres databases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create Postgres databases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-postgres-locally-with-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run Postgres locally with docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kubernetes deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pgadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      pgAdmin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#some-psql-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Some psql commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-postgresql-on-openshift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy postgresql on OpenShift
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy postgresql on OpenShift">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Operator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#some-sql-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Some SQL examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Some SQL examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercises-from-medium-articles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exercises from medium articles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-customers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create customers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create products
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create containers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create orders
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hibernate-orm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hibernate ORM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      High Availability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-python-to-interact-with-the-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use python to interact with the DB
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-readings" class="md-nav__link">
+    <span class="md-ellipsis">
+      More readings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aws-aurora" class="md-nav__link">
+    <span class="md-ellipsis">
+      AWS Aurora
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ibm-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      IBM Cloud
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IBM Cloud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-an-instance-of-postgresql-on-ibm-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an instance of Postgresql on IBM Cloud
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cassandra/readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cassandra
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mysql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MySQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../couchdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Couchdb / Cloudant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongodb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mongo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../db2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DB2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jbcodeforce.github.io/data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jbcodeforce.github.io" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Return to main
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#value-propositions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Value propositions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-for-ha" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture for HA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture for HA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#my-projects-using-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      My Projects using postgresql
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-postgres-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Postgres databases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create Postgres databases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-postgres-locally-with-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run Postgres locally with docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kubernetes deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pgadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      pgAdmin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#some-psql-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Some psql commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-postgresql-on-openshift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy postgresql on OpenShift
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy postgresql on OpenShift">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Operator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#some-sql-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Some SQL examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Some SQL examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercises-from-medium-articles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exercises from medium articles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-customers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create customers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create products
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create containers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create orders
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hibernate-orm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hibernate ORM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      High Availability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-python-to-interact-with-the-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use python to interact with the DB
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-readings" class="md-nav__link">
+    <span class="md-ellipsis">
+      More readings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aws-aurora" class="md-nav__link">
+    <span class="md-ellipsis">
+      AWS Aurora
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ibm-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      IBM Cloud
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IBM Cloud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-an-instance-of-postgresql-on-ibm-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an instance of Postgresql on IBM Cloud
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="postgresql">PostgreSQL</h1>
+<p><a href="https://www.postgresql.org/">Postgresql</a> is open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.</p>
+<p>PostgreSQL features ACID (Atomicity, Consistent, Isolation and Durability) properties. It has indexes (primary/unique), updatable views, triggers, foreign keys (FKs) and even stored procedures (SPs)</p>
+<h2 id="value-propositions">Value propositions</h2>
+<ul>
+<li>Oldest open source RDBMS and advanced one, and is object-relational database</li>
+<li>Large dataset</li>
+<li>A lot of data types and support unstructured data too.</li>
+<li>Adopted in microservice world.</li>
+<li>Run in multiple process so better for horizontal scaling</li>
+<li>Suited for applications with high volume of both reads and writes</li>
+<li>Consider PostgreSQL for any application that might grow to enterprise scope, with complex queries and frequent write operations. </li>
+<li>Includes <code>pgbench</code> to be used to create data and also to stress the database. </li>
+</ul>
+<h2 id="architecture-for-ha">Architecture for HA</h2>
+<p>The PostgreSQL stack is comprised of a primary and replica services. WAL records are exchanged between primary and replicas.</p>
+<p><img alt="" src="../images/postgres-ha.png" width="600" /></p>
+<p>Streaming replication is pushing changes from a primary PostgreSQL instance to its replicas.</p>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/warm-standby.html">Product documentation on warm standby</a></li>
+</ul>
+<h3 id="my-projects-using-postgresql">My Projects using postgresql</h3>
+<ul>
+<li><a href="https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg">Vaccine order mgr</a></li>
+<li>In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  </li>
+</ul>
+<h2 id="create-postgres-databases">Create Postgres databases</h2>
+<h3 id="run-postgres-locally-with-docker">Run Postgres locally with docker</h3>
+<ul>
+<li>Using docker command:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>--ulimit<span class="w"> </span><span class="nv">memlock</span><span class="o">=</span>-1:-1<span class="w"> </span>-it<span class="w"> </span>--rm<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--memory-swappiness<span class="o">=</span><span class="m">0</span><span class="w"> </span>--name<span class="w"> </span>pgdb<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>pguser<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>passw0rd<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>bettertodo<span class="w"> </span>-p<span class="w"> </span><span class="m">5432</span>:5432<span class="w"> </span>postgres:10.5
+</code></pre></div>
+<p>Or set the environment variables <code>POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD</code> in the .env script and then use the command: <code>source .env</code>.</p>
+<p>Under the postgresql folder there are a set of commands to run postgresql with docker and even on k8s</p>
+<ul>
+<li>start the docker image for the database: <code>./startPostgresqlLocal.sh</code></li>
+<li>
+<p>Start bash in a postgres image to access psql: <code>./startPsql.sh LOCAL</code></p>
+</li>
+<li>
+<p>Another way is to use docker compose:</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">postgresql</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pgpwd</span>
+<span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ordersdb</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5432:5432&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./database:/var/lib/postgresql/data/</span>
+</code></pre></div>
+<p>If you need to add table creation script to run when the container starts, add the following lines in the volumes</p>
+<div class="highlight"><pre><span></span><code><span class="w">      </span><span class="c1"># copy the sql script to create tables</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql</span>
+</code></pre></div>
+<p>The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows us to place SQL files in the /docker-entrypoint-initb.d folder, and the first time the service starts, it will import and execute those SQL files.</p>
+<h3 id="kubernetes-deployment">Kubernetes deployment</h3>
+<p>There is a kubernetes operator for postgresql <a href="https://cloudnative-pg.io/">CloudNativePG</a> that can be install with <a href="https://cloudnative-pg.io/documentation/1.25/installation_upgrade/">install instructions</a>:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>--server-side<span class="w"> </span>-f<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml
+
+<span class="c1"># verify, as it takes sometime the first time</span>
+kubectl<span class="w"> </span>describe<span class="w"> </span>deployment<span class="w"> </span>-n<span class="w"> </span>cnpg-system<span class="w"> </span>cnpg-controller-manager
+</code></pre></div>
+<p>The default configuration of the CloudNativePG operator comes with a Deployment of a single replica, which is suitable for most installations.</p>
+<p>Use a cluster definition like in <a href="">deployment/k8s/pg-cluster.yaml</a>. By default, the operator will install the latest available minor version of the latest major version of PostgreSQL when the operator was released.</p>
+<div class="highlight"><pre><span></span><code>k<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pg-cluster.yaml
+</code></pre></div>
+<p>To deploy the PGadmin web app use the deployment: <code>pgadmin-deploy.yaml</code>. </p>
+<h3 id="pgadmin">pgAdmin</h3>
+<p>The docker compose includes the pgAdmin UI at address http://localhost:5050. See user and password in docker compose. Register a server by using postgres as hostname, user and password.</p>
+<ul>
+<li>We can create a new database (dvdrental for example) and load definition and data from a backup which is a tar file.</li>
+</ul>
+<p><img alt="" src="../images/pgAdmin-restoreDB.png" /></p>
+<ul>
+<li>Use the <code>Query Tool</code> to execute SQL command.</li>
+</ul>
+<p>We can load csv file in a table. Example from cab_rides for flink study: </p>
+<ol>
+<li>Be sure the csv file is mounted inside the docker container</li>
+<li>Create a table matching the columns of the csv with the expected types</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cab_rides</span><span class="p">(</span>
+<span class="n">cab_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span>
+<span class="n">cab_plate</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span>
+<span class="n">cab_type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span>
+<span class="n">driver_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="w"> </span>
+<span class="n">ongoing_trip</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span>
+<span class="n">pickup_location</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span>
+<span class="n">destination</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span>
+<span class="n">passenger_count</span><span class="w"> </span><span class="nb">INTEGER</span>
+<span class="p">);</span>
+</code></pre></div>
+<ol>
+<li>
+<p>Enter a query like</p>
+<div class="highlight"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span><span class="n">cab_rides</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="s1">&#39;/tmp/data_files/cab_rides.csv&#39;</span><span class="w"> </span><span class="k">DELIMITER</span><span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="k">Or</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">header</span>
+<span class="k">COPY</span><span class="w"> </span><span class="n">cab_rides</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="k">DELIMITER</span><span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="w"> </span><span class="n">CSV</span><span class="w"> </span><span class="n">HEADER</span><span class="p">;</span>
+</code></pre></div>
+</li>
+<li>
+<p>Can also use the backup and restore functions on the database to load data and schema: use the upload file button on top left of the user interface.</p>
+</li>
+</ol>
+<h3 id="some-psql-commands">Some psql commands</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># connect to the container</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>pgdb<span class="w"> </span>bash
+<span class="c1"># start psql using the user specified</span>
+psql<span class="w"> </span>-U<span class="w"> </span>pguser<span class="w"> </span>-d<span class="w"> </span>dbname
+<span class="c1"># switch to another DB</span>
+<span class="se">\c</span><span class="w"> </span>dbname
+<span class="c1"># list existing DBs</span>
+<span class="se">\l</span>
+<span class="c1"># list available tables</span>
+<span class="se">\d</span>t<span class="w"> </span>
+<span class="c1"># describe table</span>
+<span class="se">\d</span><span class="w"> </span>table_name
+<span class="c1"># list schemas</span>
+<span class="se">\d</span>n
+<span class="c1"># list available funtions</span>
+<span class="se">\d</span>f
+<span class="c1"># views</span>
+<span class="se">\d</span>v
+<span class="c1"># list users</span>
+<span class="se">\d</span>u
+<span class="c1"># command history</span>
+<span class="se">\s</span>
+<span class="c1"># execute previoud commmand</span>
+<span class="se">\g</span>
+<span class="c1"># Execute a SQL query</span>
+<span class="k">select</span><span class="w"> </span>*<span class="w"> </span>from<span class="w"> </span>public.tablename<span class="p">;</span>
+</code></pre></div>
+<h3 id="deploy-postgresql-on-openshift">Deploy postgresql on OpenShift</h3>
+<h4 id="using-deployment">Using deployment</h4>
+<p>See the script deployPostgresOnOpenShift.sh.</p>
+<h4 id="using-operator">Using Operator</h4>
+<p>In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See <a href="https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage">this OpenShift tutorial for more info</a>.</p>
+<p>The environment variables are defined as secrets under the postgresql namespace: <code>oc describe secret postgresql</code></p>
+<p>Remote connect to the postgresql pod: <code>oc rsh podid</code></p>
+<p>Then start <code>psql</code> using the following command: </p>
+<div class="highlight"><pre><span></span><code><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$POSTGRESQL_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span>postgresql<span class="w"> </span>-d<span class="w"> </span><span class="nv">$POSTGRESQL_DATABASE</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$POSTGRESQL_USER</span>
+psql<span class="w"> </span><span class="o">(</span><span class="m">10</span>.12<span class="o">)</span>
+Type<span class="w"> </span><span class="s2">&quot;help&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>help.
+
+<span class="nv">vaccinedb</span><span class="o">=</span>&gt;
+</code></pre></div>
+<p>To access the database with pgadmin running locally, to the remote DB, we need to do port forwarding as:</p>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>pods
+oc<span class="w"> </span>port-forward<span class="w"> </span>postgres-5f449ccd95-tclb6<span class="w"> </span><span class="m">15432</span>:5432
+</code></pre></div>
+<p>In pGAdmin efine the server entry with the connection to the port 15432.</p>
+<p>Then in the Quarkus app or in env file define properties like:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">QUARKUS_DATASOURCE_USERNAME</span><span class="o">=</span>postgres
+<span class="nb">export</span><span class="w"> </span><span class="nv">QUARKUS_DATASOURCE_PASSWORD</span><span class="o">=</span>postgres1234
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRESQL_DBNAME</span><span class="o">=</span>postgres
+<span class="nb">export</span><span class="w"> </span><span class="nv">QUARKUS_DATASOURCE_JDBC_URL</span><span class="o">=</span>jdbc:postgresql://localhost:15432/postgres
+</code></pre></div>
+<h2 id="some-sql-examples">Some SQL examples</h2>
+<p>See <a href="../">main page for SQL examples on postgresql DB like dvdrentals, or facilities rental</a>.</p>
+<h3 id="exercises-from-medium-articles">Exercises from medium articles</h3>
+<ul>
+<li>
+<p><a href="https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b">SQL Questions with Detailed Answers (Step-by-Step)</a>, see the DDL in the postgresql/medium1 folder.</p>
+</li>
+<li>
+<p>Start docker compose as it mount the ./medium1 folder into /tmp/scripts</p>
+</li>
+<li>Create the tables in the postgres db</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># under /tmp/scripts</span>
+psql<span class="w"> </span>-U<span class="w"> </span>postgres<span class="w"> </span>-f<span class="w"> </span>create_db.sql
+</code></pre></div>
+<ul>
+<li>insert records <code>psql -U postgres -f inser-record-1.sql</code></li>
+<li><strong>Write an SQL query to report all customers who never order anything</strong>. Use left join to take all the values from the left table and the common rows from the right table. The left join was performed on the Customer table because we want all the Customers with their Orders.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orders</span><span class="p">.</span><span class="n">customer_id</span><span class="p">;</span>
+
+<span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">name</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span>
+<span class="c1">----+-------+----+-------------</span>
+<span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Sam</span><span class="w">   </span><span class="o">|</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">           </span><span class="mi">3</span>
+<span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Joe</span><span class="w">   </span><span class="o">|</span><span class="w">  </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w">           </span><span class="mi">1</span>
+<span class="w">  </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Henry</span><span class="w"> </span><span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w">            </span>
+<span class="w">  </span><span class="mi">4</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">Max</span><span class="w">   </span><span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w">   </span>
+
+<span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orders</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">orders</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">;</span><span class="w"> </span>
+</code></pre></div>
+<ul>
+<li><strong>Write an SQL query to report the second highest salary from the Employee table</strong>. First ordered the salary in descending order to get the highest salary in the first and take only the unique salaries by using DISTINCT argument. The OFFSET argument is used to identify the starting point to return rows from a result set.  LIMIT clause restricts how many rows are returned.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">secondhighestsalary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employes</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">offset</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="create-customers">Create customers</h3>
+<p>Here is the complete SQL you can run in psql</p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w"> </span><span class="n">lastname</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">firstname</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">zipcode</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="n">country</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="nb">integer</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">,</span><span class="n">lastname</span><span class="p">,</span><span class="n">firstname</span><span class="p">,</span><span class="n">zipcode</span><span class="p">,</span><span class="n">country</span><span class="p">,</span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;C01&#39;</span><span class="p">,</span><span class="s1">&#39;Builder&#39;</span><span class="p">,</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C02&#39;</span><span class="p">,</span><span class="s1">&#39;Destroyer&#39;</span><span class="p">,</span><span class="s1">&#39;Bill&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C03&#39;</span><span class="p">,</span><span class="s1">&#39;Climber&#39;</span><span class="p">,</span><span class="s1">&#39;Jack&#39;</span><span class="p">,</span><span class="s1">&#39;95052&#39;</span><span class="p">,</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C04&#39;</span><span class="p">,</span><span class="s1">&#39;Messenger&#39;</span><span class="p">,</span><span class="s1">&#39;John&#39;</span><span class="p">,</span><span class="s1">&#39;95052&#39;</span><span class="p">,</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+<p>or use the command</p>
+<div class="highlight"><pre><span></span><code>psql<span class="w"> </span>postgres://<span class="nv">$POSTGRES_USER</span>:<span class="nv">$POSTGRES_PWD</span>@<span class="nv">$POSTGRES_HOST</span>/<span class="nv">$POSTGRES_DB</span><span class="w"> </span>-a<span class="w"> </span>-f<span class="w"> </span>/home/dll/customer.sql
+</code></pre></div>
+<h3 id="create-products">Create products</h3>
+<p>Products define fresh product with controlled temperature and humidity to control for the travel.</p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">product_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+<span class="w">    </span><span class="n">target_temperature</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">target_humidity_level</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">content_type</span><span class="w"> </span><span class="n">integrer</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span><span class="n">description</span><span class="p">,</span><span class="n">target_temperature</span><span class="p">,</span><span class="n">target_humidity_level</span><span class="p">,</span><span class="n">content_type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;P01&#39;</span><span class="p">,</span><span class="s1">&#39;Carrots&#39;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;P02&#39;</span><span class="p">,</span><span class="s1">&#39;Banana&#39;</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;P03&#39;</span><span class="p">,</span><span class="s1">&#39;Salad&#39;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;P04&#39;</span><span class="p">,</span><span class="s1">&#39;Avocado&#39;</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;P05&#39;</span><span class="p">,</span><span class="s1">&#39;Tomato&#39;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>psql<span class="w"> </span>postgres://<span class="nv">$POSTGRES_USER</span>:<span class="nv">$POSTGRES_PWD</span>@<span class="nv">$POSTGRES_HOST</span>/<span class="nv">$POSTGRES_DB</span><span class="w"> </span>-a<span class="w"> </span>-f<span class="w"> </span>/home/dll/product.sql
+</code></pre></div>
+<h3 id="create-containers">Create containers</h3>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">containers</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">container_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">model</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+<span class="w">    </span><span class="n">brand</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">last_maintenance_date</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
+<span class="w">    </span><span class="n">capacity</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">latitude</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">longitude</span><span class="w"> </span><span class="nb">REAL</span>
+<span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">containers</span><span class="p">(</span><span class="n">container_id</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">brand</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">capacity</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;C01&#39;</span><span class="p">,</span><span class="s1">&#39;20RF&#39;</span><span class="p">,</span><span class="s1">&#39;Brand01&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C02&#39;</span><span class="p">,</span><span class="s1">&#39;45RW&#39;</span><span class="p">,</span><span class="s1">&#39;Brand01&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">45</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C03&#39;</span><span class="p">,</span><span class="s1">&#39;20RF&#39;</span><span class="p">,</span><span class="s1">&#39;Brand01&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C04&#39;</span><span class="p">,</span><span class="s1">&#39;40RH&#39;</span><span class="p">,</span><span class="s1">&#39;Brand02&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;C05&#39;</span><span class="p">,</span><span class="s1">&#39;40RH&#39;</span><span class="p">,</span><span class="s1">&#39;Brand01&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="create-orders">Create orders</h3>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">order_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">quantity</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">creation_date</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pickup_zipcode</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+<span class="w">    </span><span class="n">destination_zipcode</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+<span class="w">    </span><span class="n">container_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">product_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
+<span class="w">    </span><span class="n">customer_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+<span class="w">    </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">containers</span><span class="p">(</span><span class="n">container_id</span><span class="p">),</span>
+<span class="w">    </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="p">(</span><span class="n">product_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="n">product_id</span><span class="p">),</span>
+<span class="w">    </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">customers</span><span class="p">(</span><span class="n">customer_id</span><span class="p">));</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ORDERS</span><span class="w"> </span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span><span class="n">quantity</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">creation_date</span><span class="p">,</span><span class="n">pickup_zipcode</span><span class="p">,</span><span class="n">destination_zipcode</span><span class="p">,</span><span class="n">container_id</span><span class="p">,</span><span class="n">product_id</span><span class="p">,</span><span class="n">customer_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span>
+<span class="p">(</span><span class="s1">&#39;O01&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;2019-04-09 09:25:38.336&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;34000&#39;</span><span class="p">,</span><span class="s1">&#39;C01&#39;</span><span class="p">,</span><span class="s1">&#39;P01&#39;</span><span class="p">,</span><span class="s1">&#39;C01&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;O02&#39;</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;2019-04-09 09:25:38.336&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;34000&#39;</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="s1">&#39;P03&#39;</span><span class="p">,</span><span class="s1">&#39;C02&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;O03&#39;</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;2019-04-09 09:25:38.336&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;34000&#39;</span><span class="p">,</span><span class="s1">&#39;C02&#39;</span><span class="p">,</span><span class="s1">&#39;P04&#39;</span><span class="p">,</span><span class="s1">&#39;C03&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;O04&#39;</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;2019-04-09 09:25:38.336&#39;</span><span class="p">,</span><span class="s1">&#39;95050&#39;</span><span class="p">,</span><span class="s1">&#39;34000&#39;</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="s1">&#39;P04&#39;</span><span class="p">,</span><span class="s1">&#39;C04&#39;</span><span class="p">)</span>
+<span class="p">;</span>
+</code></pre></div>
+<h2 id="hibernate-orm">Hibernate ORM</h2>
+<p>See code for <a href="https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg">order management</a></p>
+<h2 id="high-availability">High Availability</h2>
+<p>For HA the principle is to try to get a second server to take over quickly in case of primary server failure, or to have several nodes to serve the same data.
+Multiple solutions exist to support HA, the synchronous one consider that a data-modifying transaction is not considered committed until all servers have committed the transaction.</p>
+<ul>
+<li><strong>shared disk (hardware) failover</strong>: avoids synchronization overhead by having only one copy of the database. standby server is able to mount and start the database as though it were recovering from a database crash</li>
+<li><strong>File system - block storage</strong> writes to the standby must be done in the same order as those on the primary.</li>
+<li><strong>Write-Ahead Log Shipping</strong></li>
+<li><strong>Logical replication</strong> PostgreSQL logical replication constructs a stream of logical data modifications from the Write-Ahead Log. Logical replication allows replication of data changes on a per-table basis</li>
+<li><strong>Trigger-Based Primary-Standby Replication</strong> asynch replication from primary to standby servers</li>
+<li><strong>SQL-Based Replication Middleware</strong>:  a program intercepts every SQL query and sends it to one or all servers</li>
+<li><strong>Synchronous Multimaster Replication</strong> each server accept write requests,  modified data is transmitted from the original server to every other server before each transaction commits.</li>
+<li><strong>Asynchronous Multimaster Replication</strong> each server works independently, and periodically communicates with the other servers to identify conflicting transactions which can be resolved by DB admin.</li>
+</ul>
+<h2 id="use-python-to-interact-with-the-db">Use python to interact with the DB</h2>
+<ul>
+<li>install psycopg2</li>
+</ul>
+<div class="highlight"><pre><span></span><code>pip install psycopg2
+</code></pre></div>
+<h2 id="more-readings">More readings</h2>
+<ul>
+<li><a href="https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5">How to Run PostgreSQL and pgAdmin Using Docker</a></li>
+</ul>
+<h2 id="aws-aurora">AWS Aurora</h2>
+<h2 id="ibm-cloud">IBM Cloud</h2>
+<h3 id="create-an-instance-of-postgresql-on-ibm-cloud">Create an instance of Postgresql on IBM Cloud</h3>
+<p>No need to reinvent the <a href="https://cloud.ibm.com/services/databases-for-postgresql">product documentation</a> to create one instance. A summary of what needs to be done</p>
+<ul>
+<li>Set user admin password:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>ibmcloud cdb user-password &lt;instance name&gt; admin alongpassw0rd
+</code></pre></div>
+<ul>
+<li>
+<p>Get URL to connect to the service: URL, Port number</p>
+</li>
+<li>
+<p>Get SSL certificate for client using ibm cloud CLI</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code>ibmcloud<span class="w"> </span>cdb<span class="w"> </span>deployment-cacert<span class="w"> </span>Green-DB-PostgreSQL<span class="w"> </span>&gt;<span class="w"> </span>postgres.crt
+</code></pre></div>
+<ul>
+<li>Use <code>pgAdmin4</code> to administer postgres: add a server and complete the ULR, port, admin as user and the password set in previous step.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">5050</span>:80<span class="w"> </span>-d<span class="w"> </span>-e<span class="w"> </span><span class="nv">PGADMIN_DEFAULT_EMAIL</span><span class="o">=</span>admin<span class="w"> </span>-e<span class="w"> </span><span class="nv">PGADMIN_DEFAULT_PASSWORD</span><span class="o">=</span>alongpassw0rd<span class="w"> </span>dpage/pgadmin4
+<span class="c1"># http://localhost:5050/browser/</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>
