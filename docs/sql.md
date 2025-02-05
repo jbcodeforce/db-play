@@ -1,6 +1,6 @@
 # SQL Language
 
-This chapter is dedicated to common SQL implementation, including complex statements.
+This chapter is dedicated to summarize common major SQL constructs. The [following tutorial has a lot of very good examples for deeper study.](https://www.sqltutorial.org/)
 
 ### WITH
 
@@ -16,12 +16,12 @@ WITH cte_name AS (
 SELECT * FROM cte_name;
 ```
 
-Can be used for recursive queries: Like get the list of employees
+Can be used for recursive queries: Like get the list of employees of their manager up to the CEO:
 
 ```sql
 WITH RECURSIVE employee_hierarchy AS (
     -- Base case: get top-level employees
-    SELECT employee_id, name, manager_id, 1 as level
+    SELECT employee_id, `name`, manager_id, 1 as level
     FROM employees
     WHERE manager_id IS NULL
     
@@ -56,7 +56,7 @@ INNER JOIN departments
     ON employees.dept_id = departments.id;
 ```
 
-It is used to find matches between tables, or to get complete records only.
+It is used to find matches between tables, or to get the complete records only.
 
 
 * Get the top 10 customer name who do the most renting
@@ -79,7 +79,7 @@ where address.district = 'California'
 
 #### LEFT (OUTER) JOIN
 
-OUTER JOIN is used to deal with column only in one table.  Returns all rows from left table and matching rows from right table.
+OUTER JOIN or LEFT JOIN is used to deal with column only in the left side table.  Returns all rows from left table, matching row from right table, or null if no match: 
 
 ```sql
 SELECT employees.name, departments.dept_name
@@ -98,6 +98,8 @@ select title, inventory_id, store_id from film
 left join inventory 
 on film.film_id = inventory.film_id
 ```
+
+Some films may not be in the current inventory.
 
 #### RIGHT (OUTER) JOIN:
 

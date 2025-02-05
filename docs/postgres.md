@@ -29,14 +29,14 @@ Streaming replication is pushing changes from a primary PostgreSQL instance to i
 
 * [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
 * In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  
-* [Autonomous Car Ride]()
+
 
 ## Create Postgres databases
 
 
-### Run Postgres locally
+### Run Postgres locally with docker
 
-Use docker command:
+* Using docker command:
 
 ```shell
 docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name pgdb -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=passw0rd -e POSTGRES_DB=bettertodo -p 5432:5432 postgres:10.5
@@ -45,12 +45,12 @@ docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name pgd
 Or set the environment variables `POSTGRESQL_USER,POSTGRESQL_HOST, POSTGRESQL_PWD` in the .env script and then use the command: `source .env`.
 
 
-Under the postgresql folder:
+Under the postgresql folder there are a set of commands to run postgresql with docker and even on k8s
 
 * start the docker image for the database: `./startPostgresqlLocal.sh`
 * Start bash in a postgres image to access psql: `./startPsql.sh LOCAL`
 
-another way is to use docker compose:
+* Another way is to use docker compose:
 
 ```yaml
  postgresql:
@@ -67,7 +67,7 @@ another way is to use docker compose:
       - ./database:/var/lib/postgresql/data/
 ```
 
-If you need to add table creation script add the following lines in the volumes
+If you need to add table creation script to run when the container starts, add the following lines in the volumes
 
 ```yaml
       # copy the sql script to create tables
@@ -75,6 +75,29 @@ If you need to add table creation script add the following lines in the volumes
 ```
 
 The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows us to place SQL files in the /docker-entrypoint-initb.d folder, and the first time the service starts, it will import and execute those SQL files.
+
+### Kubernetes deployment
+
+There is a kubernetes operator for postgresql [CloudNativePG](https://cloudnative-pg.io/) that can be install with [install instructions](https://cloudnative-pg.io/documentation/1.25/installation_upgrade/):
+
+```sh
+kubectl apply --server-side -f \
+  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml
+
+# verify, as it takes sometime the first time
+kubectl describe deployment -n cnpg-system cnpg-controller-manager
+```
+
+The default configuration of the CloudNativePG operator comes with a Deployment of a single replica, which is suitable for most installations.
+
+Use a cluster definition like in [deployment/k8s/pg-cluster.yaml](). By default, the operator will install the latest available minor version of the latest major version of PostgreSQL when the operator was released.
+
+```sh
+k apply -f pg-cluster.yaml
+```
+
+To deploy the PGadmin web app use the deployment: `pgadmin-deploy.yaml`. 
+
 
 ### pgAdmin
 
@@ -112,13 +135,14 @@ We can load csv file in a table. Example from cab_rides for flink study:
     COPY cab_rides FROM '/' DELIMITER ',' CSV HEADER;
     ```
 
-* Can also use the backup and restore functions on the database to load data and schema: use the upload file button on top left.
+* Can also use the backup and restore functions on the database to load data and schema: use the upload file button on top left of the user interface.
 
 ### Some psql commands
 
 ```shell
 # connect to the container
 docker exec -ti pgdb bash
+# start psql using the user specified
 psql -U pguser -d dbname
 # switch to another DB
 \c dbname
@@ -144,19 +168,13 @@ psql -U pguser -d dbname
 select * from public.tablename;
 ```
 
-### Connect to remote Postgres on IBM Cloud
-
-```shell
-./startPsql.sh IBMCLOUD
-
-psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB
-```
 
 ### Deploy postgresql on OpenShift
 
 #### Using deployment
 
 See the script deployPostgresOnOpenShift.sh.
+
 #### Using Operator
 
 In the 'developer perspective` of OpenShift console, use the database and a postgresql without persistence, or ephemeral. Set the DB name, user and password. See [this OpenShift tutorial for more info](https://docs.openshift.com/enterprise/3.1/using_images/db_images/postgresql.html#configuration-and-usage).
