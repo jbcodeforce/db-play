@@ -1,4 +1,4 @@
-# Database studies
+# [Database studies](https://jbcodeforce.github.io/db-play/)
 
 This repository supports simple studies for data base like db2, postgresql and mysql.
 

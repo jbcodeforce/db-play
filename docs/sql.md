@@ -2,7 +2,8 @@
 
 This chapter is dedicated to summarize common major SQL constructs. The [following tutorial has a lot of very good examples for deeper study.](https://www.sqltutorial.org/)
 
-### WITH
+
+## WITH
 
 The WITH clause allows to create temporary named result sets that exist only for the duration of the query. It is like creating a temporary view or defining a sub-query that we can reference multiple times.
 It is named **CTE for Common Table Expressions**.
@@ -36,11 +37,11 @@ SELECT * FROM emp_hierarchy;
 ```
 
 
-### Joins
+## Joins
 
 A JOIN combines rows from two or more tables based on a related column between them. There are several types of JOINs:
 
-#### INNER JOIN
+### INNER JOIN
 
 Te goal is to build a projection of all elements in table A also present in table B. Get all columns of both tables:
 
@@ -77,7 +78,7 @@ on address.address_id = customer.address_id
 where address.district = 'California'
 ```
 
-#### LEFT (OUTER) JOIN
+### LEFT (OUTER) JOIN
 
 OUTER JOIN or LEFT JOIN is used to deal with column only in the left side table.  Returns all rows from left table, matching row from right table, or null if no match: 
 
@@ -101,7 +102,7 @@ on film.film_id = inventory.film_id
 
 Some films may not be in the current inventory.
 
-#### RIGHT (OUTER) JOIN:
+### RIGHT (OUTER) JOIN:
 
 Returns all rows from right table and matching rows from left table.
 
@@ -113,7 +114,7 @@ RIGHT JOIN departments
 -- Will show all departments, even those without employees
 ```
 
-#### FULL OUTER JOIN
+### FULL OUTER JOIN
 
 Returns all rows from both tables.
 
@@ -138,8 +139,7 @@ where inventory_ID IS null
 
 ![](./images/left-join.png)
 
-
-#### Combining Joins
+### Combining Joins
 
 ```sql
 -- Example with three tables
@@ -155,7 +155,7 @@ LEFT JOIN projects p
 WHERE d.location = 'New York';
 ```
 
-#### Some practices
+### Some practices
 
 * Always use table aliases for better readability
 * Specify the JOIN type explicitly (don't rely on implicit joins)
@@ -186,3 +186,44 @@ WHERE d.location = 'New York';
     where rental.return_date between '2005-05-29' and ' 2005-05-30')
     ORDER BY title
     ```
+
+## OVER
+
+The OVER clause in SQL is a powerful operator that transforms how aggregate functions (like SUM, AVG, COUNT, MAX, MIN) and other window functions (like ROW_NUMBER, RANK, LEAD, LAG) operate. Instead of grouping rows into a single summary row (like a traditional GROUP BY clause), the OVER clause allows these functions to perform calculations across a set of related rows while still returning each individual row of the original result set.
+
+For example calculating the running total of the transactions seen so far, by also generating each transaction:
+
+```sql
+tx_id, tx_date, amount, running_total
+74	"2024-06-14"	626.69	626.69
+2	"2024-06-20"	793.97	1420.66
+90	"2024-06-26"	397.17	1817.83
+88	"2024-06-30"	290.69	2108.52
+78	"2024-07-01"	245.87	2354.39
+```
+
+```sql
+SELECT transaction_id, transaction_date, amount, sum(amount) over (order by transaction_date) as running_total 
+FROM sales;
+```
+
+* **Common Use Cases for the OVER Clause:**
+
+    * Running Totals: Calculating a cumulative sum or count as you go through the data.
+    * Moving Averages: Calculating the average of a specific number of preceding and/or following rows.
+    * Ranking: Assigning ranks to rows within a group (e.g., ROW_NUMBER(), RANK(), DENSE_RANK(), NTILE()).
+    * Percentage of Total: Calculating what percentage each row's value contributes to a total for its group.
+    * Comparing to Previous/Next Rows: Using LAG() to get a value from a previous row or LEAD() to get a value from a subsequent row within a partition.
+    * First/Last Value in a Group: Retrieving the FIRST_VALUE() or LAST_VALUE() in a defined window.
+
+**Examples of queries**
+
+| Problem | Queries|
+| --- | --- |
+|Calculate the total sales for each salesperson | SELECT SalesPerson, SaleDate, SaleAmount, SUM(SaleAmount) OVER (PARTITION BY SalesPerson) AS TotalSalesPerPerson FROM Sales; |
+| Rank sales within each salesperson's record | SELECT SalesPerson, SaleDate, SaleAmount, ROW_NUMER() OVER (PARTITION BY SalesPerson ORDER BY SaleAmount DESC) AS SaleRank  FROM Sales;| 
+| Calculate a running total of sales for each salesperson, ordered by date |  SELECT SalesPerson, SaleDate, SaleAmount, SUM(SaleAmount) OVER (PARTITION BY SalesPerson ORDER BY SaleDat) AS RunningTotal FROM Sales;|
+
+### See classical SQL puzzles
+
+See [puzzles](https://github.com/jbcodeforce/db-play/tree/master/postgresql/puzzles/) with instructions and code explanations in each sql file.

@@ -2,9 +2,9 @@
 
 !!!- "info"
     - Updated 8/20/2022 - postgres content
-    - Update 11/2024
+    - Updated 06/2025 - Puzzles and Postgresql on k8s
 
-This repository supports simple studies for database playground (SQL, JPA) using technologies like db2, postgresql or mysql. It is completed by study of some change data capture to move data from database to kafka topic.
+This repository supports simple studies for database playground (SQL, JPA) using technologies like db2, postgresql. duckdb. It is completed by study of some change data capture to move data from database to kafka topic.
 
 ## SQL basics
 
@@ -256,13 +256,3 @@ quarkus.hibernate-orm.sql-load-script=import.sql
 quarkus.smallrye-openapi.path=/inventory/swagger
 quarkus.swagger-ui.always-include=true
 ```
-
-## Postgresql
-
-See [dedicated note](./postgres.md).
-
-### Setting CDC on those table
-
-The Kafka connector is deployed as part of Strimzi. 
-
-TBC

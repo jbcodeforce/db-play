@@ -29,10 +29,10 @@ Streaming replication is pushing changes from a primary PostgreSQL instance to i
 
 * [Vaccine order mgr](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
 * In this project there is a copy of Quarkus - panache - postgresql quickstart with settings to access remote postgresql on IBM Cloud and kubernetes template for a secret to get URL, user and password to access the DB.  
-
+* [Autonomous Car Ride]()
+* [CDC Debezium demo with Flink](https://github.com/jbcodeforce/flink-studies/tree/master/e2e-demos/cdc-demo)
 
 ## Create Postgres databases
-
 
 ### Run Postgres locally with docker
 
@@ -81,16 +81,14 @@ The official PostgreSQL Docker image https://hub.docker.com/_/postgres/ allows u
 There is a kubernetes operator for postgresql [CloudNativePG](https://cloudnative-pg.io/) that can be install with [install instructions](https://cloudnative-pg.io/documentation/1.25/installation_upgrade/):
 
 ```sh
-kubectl apply --server-side -f \
-  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml
-
 # verify, as it takes sometime the first time
 kubectl describe deployment -n cnpg-system cnpg-controller-manager
 ```
 
-The default configuration of the CloudNativePG operator comes with a Deployment of a single replica, which is suitable for most installations.
+See the [Quickstart](https://github.com/cloudnative-pg/cloudnative-pg/blob/main/docs/src/quickstart.md) . 
+The default configuration of the CloudNativePG operator comes with a Deployment of a single replica, which is suitable for most demonstrations.
 
-Use a cluster definition like in [deployment/k8s/pg-cluster.yaml](). By default, the operator will install the latest available minor version of the latest major version of PostgreSQL when the operator was released.
+Define a PG cluster, see [pg-cluster](https://github.com/jbcodeforce/flink-studies/blob/master/e2e-demos/flink-to-sink-postgresql/k8s/pg-cluster.yaml). By default, the operator will install the latest available minor version of the latest major version of PostgreSQL when the operator was released.
 
 ```sh
 k apply -f pg-cluster.yaml
@@ -98,6 +96,16 @@ k apply -f pg-cluster.yaml
 
 To deploy the PGadmin web app use the deployment: `pgadmin-deploy.yaml`. 
 
+[Cloud Native Postgresql K8S operator.](https://cloudnative-pg.io/) to deploy Posgresql using CRD. and [installation](https://github.com/cloudnative-pg/cloudnative-pg/blob/main/docs/src/installation_upgrade.md).
+
+
+Access to the psql cli via:
+
+```sh
+k get pods -n pgdb
+k exec -ti -n pgdb pg-cluster-1 -c postgres -- psql -x -c "SHOW timezone"  
+k exec -ti -n pgdb pg-cluster-1 -c postgres  -- bash
+```
 
 ### pgAdmin
 
@@ -139,11 +147,15 @@ We can load csv file in a table. Example from cab_rides for flink study:
 
 ### Some psql commands
 
+[See psqk commands documentation.](https://www.postgresql.org/docs/current/app-psql.html)
+
 ```shell
 # connect to the container
 docker exec -ti pgdb bash
 # start psql using the user specified
 psql -U pguser -d dbname
+# for k8s deployment: first exec to the pod: k exec -ti -n pgdb pg-cluster-1 -c postgres  -- bash
+psql "host=pg-cluster-rw user=app dbname=app password=apppwd"
 # switch to another DB
 \c dbname
 # list existing DBs
@@ -166,7 +178,10 @@ psql -U pguser -d dbname
 \g
 # Execute a SQL query
 select * from public.tablename;
+create table customers(id integer not null primary key, name varchar(20));
 ```
+
+See [puzzles](https://github.com/jbcodeforce/db-play/tree/master/postgresql/puzzles/)
 
 
 ### Deploy postgresql on OpenShift
@@ -215,9 +230,10 @@ export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:15432/postgres
 ## Some SQL examples
 
 See [main page for SQL examples on postgresql DB like dvdrentals, or facilities rental](./index.md).
+
 ### Exercises from medium articles
 
-* [SQL Questions with Detailed Answers (Step-by-Step)](https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b), see the DDL in the postgresql/medium1 folder.
+* [SQL Questions with Detailed Answers (Step-by-Step)](https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b), see the sql scripts in the postgresql/medium1 folder.
 
   * Start docker compose as it mount the ./medium1 folder into /tmp/scripts
   * Create the tables in the postgres db
@@ -241,12 +257,6 @@ See [main page for SQL examples on postgresql DB like dvdrentals, or facilities 
     4 | Max   |    |   
 
   select name from customers left join orders on customers.id = orders.customer_id where orders.customer_id is null; 
-  ```
-
-* **Write an SQL query to report the second highest salary from the Employee table**. First ordered the salary in descending order to get the highest salary in the first and take only the unique salaries by using DISTINCT argument. The OFFSET argument is used to identify the starting point to return rows from a result set.  LIMIT clause restricts how many rows are returned.
-
-  ```sql
-  select distinct salary as secondhighestsalary from employes order by salary DESC limit 1 offset 1;
   ```
 
 
@@ -294,52 +304,6 @@ INSERT INTO products(product_id,description,target_temperature,target_humidity_l
 psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/product.sql
 ```
 
-### Create containers
-
-```sql
-CREATE TABLE containers (
-    container_id varchar(64) NOT NULL PRIMARY KEY,
-    model varchar(5),
-    brand varchar(20),
-    status varchar(20),
-    last_maintenance_date TIMESTAMP,
-    capacity integer,
-    latitude REAL,
-    longitude REAL
-);
-INSERT INTO containers(container_id,model,brand,status,capacity) VALUES
-('C01','20RF','Brand01',1,20),
-('C02','45RW','Brand01',1,45),
-('C03','20RF','Brand01',1,20),
-('C04','40RH','Brand02',1,40),
-('C05','40RH','Brand01',1,40);
-```
-
-### Create orders
-
-```sql
-CREATE TABLE orders (
-    order_id varchar(26) NOT NULL PRIMARY KEY,
-    quantity integer, 
-    creation_date TIMESTAMP,
-    status integer,
-    pickup_zipcode varchar(6),
-    destination_zipcode varchar(6),
-    container_id varchar(64) NULL,
-    product_id varchar(64),
-    customer_id varchar(8),
-    foreign key (container_id) references containers(container_id),
-    foreign key (product_id) references products(product_id),
-    foreign key (customer_id) references customers(customer_id));
-
-INSERT INTO ORDERS (order_id,quantity,status,creation_date,pickup_zipcode,destination_zipcode,container_id,product_id,customer_id) VALUES 
-('O01',20,1,'2019-04-09 09:25:38.336','95050','34000','C01','P01','C01'),
-('O02',40,1,'2019-04-09 09:25:38.336','95050','34000',NULL,'P03','C02'),
-('O03',40,1,'2019-04-09 09:25:38.336','95050','34000','C02','P04','C03'),
-('O04',40,1,'2019-04-09 09:25:38.336','95050','34000',NULL,'P04','C04')
-;
-```
-
 ## Hibernate ORM
 
 See code for [order management](https://github.com/ibm-cloud-architecture/vaccine-order-mgr-pg)
@@ -365,6 +329,17 @@ Multiple solutions exist to support HA, the synchronous one consider that a data
 ```
 pip install psycopg2
 ```
+
+* Reading table content
+
+```python
+```
+
+* Writing new content
+
+```python
+```
+
 ## More readings
 
 * [How to Run PostgreSQL and pgAdmin Using Docker](https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5)
