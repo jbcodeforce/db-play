@@ -1,6 +1,6 @@
 # A set of SQL puzzles
 
-Once the app database is created in Postgresql we can use the SQLs in this folder to do the [classical SQL puzzles](https://dev.to/binoy123/sql-puzzles-3mei).
+Once the `app` database is created in Postgresql, we can use the SQLs in this folder to do the [classical SQL puzzles](https://dev.to/binoy123/sql-puzzles-3mei).
 
 * Prepare employee database: copy paste the content of [prepare_tables.sql](https://github.com/jbcodeforce/db-play/tree/master/postgresql/puzzles/prepare_tables.sql)
 
