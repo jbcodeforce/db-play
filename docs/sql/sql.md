@@ -1,7 +1,97 @@
-# SQL Language
+# Intermediate SQL
 
 This chapter is dedicated to summarize common major SQL constructs. The [following tutorial has a lot of very good examples for deeper study.](https://www.sqltutorial.org/)
 
+
+* Protect against null for value and substitute using COALESCE
+
+```sql
+select product, (price - coalesce(discount,0)) from products;
+```
+
+### Play with timestamp
+
+```sql
+-- get the year of a date
+select extract(year from payment_date) as myyear from payment;
+-- can use month, quarter, month, day
+-- get how old is a record
+select AGE(payment_date) from payment;
+--
+select TO_CHAR(payment_date, "MM-DD-YYYY") from payment;
+```
+
+### Mathematical functions
+
+Compute things from columns. [Examples from postgresql](https://www.postgresql.org/docs/9.5/functions-math.html)
+
+* Get list of students who scored better than average grade
+
+```sql
+-- avg grade
+select AVG(grade) from test_scores
+-- solution with subquery
+select student, grade from test_scrores
+where grade > ( select AVG(grade) from test_scores);
+```
+
+### Self-join
+
+A query in which table is joined to itself: used to compare values in a column of rows within the same table. Need to use aliases. Get the employe's name and the name of his manager:
+
+```sql
+select emp.name, report.name as manager from employees as emp
+join employees as report 
+on emp.emp_id = report.report_id 
+```
+
+* find the films with the same length presented as pair
+
+```sql
+from f1.title, f2.title, f1.length from film as f1
+inner join film as f2
+on f1.film_id != f2.film_id and f1.length = f2.length
+```
+
+* Compare the various amounts of films per movie rating
+
+```sql
+select
+sum(CASE rating
+    WHEN 'R' THEN 1
+    ELSE 0
+END) as R,
+sum(CASE rating
+    WHEN 'PG' THEN 1
+    ELSE 0
+END) as PG,
+sum(CASE rating
+    WHEN 'PG-13' THEN 1
+    ELSE 0
+END) as PG13
+from film
+```
+
+
+### Add views
+
+It is a stored query to be executed often.
+
+```sql
+create view customer_info as 
+SELECT ... -- the sql to repeat
+```
+
+### Remove duplicates
+
+```sql
+-- search for same transaction
+SELECT transaction_id, COUNT(transaction_id)
+FROM Transaction__Table
+GROUP BY transaction_id
+HAVING COUNT(transaction_id) > 1;
+-- 
+```
 
 ## WITH
 
