@@ -1,6 +1,6 @@
-source ../set_env.sh $1
+source ../setenv.sh $1
 
-docker run --network bridge --name psql -ti -v $(pwd):/home \
+docker run -ti -v $(pwd):/home \
   -e POSTGRES_USER=$POSTGRESQL_USER \
   -e POSTGRES_PWD=$POSTGRESQL_PWD \
   -e POSTGRES_DB=$POSTGRESQL_DBNAME \

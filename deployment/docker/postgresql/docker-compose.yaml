@@ -17,6 +17,8 @@ services:
       - '5432:5432'
     volumes:
       - ./data/appdb:/var/lib/postgresql/data
+      - ./medium1:/tmp/scripts
+      - ./data_files:/tmp/data_files
   pgadmin:
     image: dpage/pgadmin4
     hostname: pgagmin
@@ -28,4 +30,4 @@ services:
     ports:
       - "5050:80"
     volumes: 
-      - ./:/tmp/data_files
+      - ./data_files:/tmp/data_files

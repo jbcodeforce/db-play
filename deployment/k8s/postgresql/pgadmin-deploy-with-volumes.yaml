@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: pgdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      # Pod-level security context with fsGroup
+      securityContext:
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+      # Init container to fix permissions
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /var/lib/pgadmin/storage && chown -R 5050:5050 /var/lib/pgadmin/storage && chmod -R 755 /var/lib/pgadmin/storage']
+        volumeMounts:
+        - name: pgadmin-storage
+          mountPath: /var/lib/pgadmin/storage
+        securityContext:
+          runAsUser: 0
+      containers:
+      - name: pgadmin
+        image: dpage/pgadmin4:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: admin@example.com
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: password123
+        - name: PGADMIN_CONFIG_SERVER_MODE
+          value: "True"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        volumeMounts:
+        - name: data-files
+          mountPath: /var/lib/pgadmin/data_files
+          readOnly: true
+        - name: medium1-files
+          mountPath: /var/lib/pgadmin/medium1
+          readOnly: true
+        - name: pgadmin-storage
+          mountPath: /var/lib/pgadmin/storage
+      volumes:
+      - name: data-files
+        hostPath:
+          path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/data_files
+          type: Directory
+      - name: medium1-files
+        hostPath:
+          path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/medium1
+          type: Directory
+      - name: pgadmin-storage
+        hostPath:
+          path: /tmp/pgadmin-storage
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin-service
+  namespace: pgdb
+spec:
+  selector:
+    app: pgadmin
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30001
+  type: NodePort

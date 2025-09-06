@@ -1,0 +1,89 @@
+# Persistent Volumes for host folders
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-files-pv
+  namespace: pgdb
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/data_files
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: medium1-files-pv
+  namespace: pgdb
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/medium1
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pgadmin-storage-pv
+  namespace: pgdb
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /tmp/pgadmin-storage
+    type: DirectoryOrCreate
+---
+# Persistent Volume Claims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-files-pvc
+  namespace: pgdb
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: medium1-files-pvc
+  namespace: pgdb
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: local-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-storage-pvc
+  namespace: pgdb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: local-storage
+

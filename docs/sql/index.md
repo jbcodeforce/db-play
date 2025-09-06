@@ -11,6 +11,88 @@ For deeper tutorial see the [sqltutorial.org](https://www.sqltutorial.org/) site
 
 ## Starting SQL editor
 
+As a main playground, I use Postgresql. See [setup section](../postgres.md#setup) to run it with docker or kubernetes. The URL should be [http://localhost:5050](http://localhost:5050) user admin@example.com
+
+* Register a server by using the name of the rw service as hostname (pg-cluster-rw) user app, and see the secret for the password.
+* Use the `Query Tool` to execute SQL command.
+
+
+## Simple getting started
+
+### Exercises from medium articles
+
+* The [SQL Questions with Detailed Answers (Step-by-Step)](https://medium.com/@anna.wu9222/sql-questions-with-detailed-answers-step-by-step-2459f6e110b), see the sql scripts in the [code/postgresql/medium1](https://github.com/jbcodeforce/db-play/tree/master/code/posgresql/medium1) folder.
+
+  * Start docker compose as it mount the `./medium1` folder into `/tmp/scripts`. 
+  * Create the tables in the postgres db
+
+  ```sh
+  # under /tmp/scripts
+  psql -U postgres -f create_db.sql
+  ```
+  
+  * insert records `psql -U postgres -f inser-record-1.sql`
+  * **Write an SQL query to report all customers who never order anything**. Use left join to take all the values from the left table and the common rows from the right table. The left join was performed on the Customer table because we want all the Customers with their Orders.
+
+  ```sql
+  select * from customers left join orders on customers.id = orders.customer_id;
+ 
+  id | name  | id | customer_id 
+  ----+-------+----+-------------
+    3 | Sam   |  1 |           3
+    1 | Joe   |  2 |           1
+    2 | Henry |    |            
+    4 | Max   |    |   
+
+  select name from customers left join orders on customers.id = orders.customer_id where orders.customer_id is null; 
+  ```
+
+
+### Create customers
+
+Here is the complete SQL you can run in psql
+
+```sql
+CREATE TABLE customers (customer_id varchar(8) PRIMARY KEY, lastname varchar(40) NOT NULL, firstname varchar(40) NOT NULL, zipcode varchar(5), country varchar(40), status integer);
+INSERT INTO customers (customer_id,lastname,firstname,zipcode,country,status) VALUES
+('C01','Builder','Bob','95050','USA',1),
+('C02','Destroyer','Bill','95050','USA',1),
+('C03','Climber','Jack','95052','USA',1),
+('C04','Messenger','John','95052','USA',1);
+```
+
+or use the command
+
+```shell
+psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/customer.sql
+``` 
+
+### Create products
+
+Products define fresh product with controlled temperature and humidity to control for the travel.
+
+```sql
+CREATE TABLE products (
+    product_id varchar(64) NOT NULL PRIMARY KEY,
+    description varchar(100),
+    target_temperature REAL,
+    target_humidity_level REAL,
+    content_type integrer
+);
+
+INSERT INTO products(product_id,description,target_temperature,target_humidity_level,content_type) VALUES
+('P01','Carrots',4,0.4,1),
+('P02','Banana',6,0.6,2),
+('P03','Salad',4,0.4,1),
+('P04','Avocado',6,0.4,1),
+('P05','Tomato',4,0.4,2);
+```
+
+```shell
+psql postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST/$POSTGRES_DB -a -f /home/dll/product.sql
+```
+
+
 ## Table creation
 
 For primary key try to using numerical type and Postgresl sequence like:
@@ -85,7 +167,7 @@ See also [the postgres study](../postgres.md) for information to run SQL on a lo
 
 ## Exercises on the dvdrental database
 
-See [postgres](./postgres.md) to restore the database schema and data from the tar file.
+See [postgres](../postgres.md) to restore the database schema and data from the tar file.
 
 * How many payment transactions were greater than $5.00?
 

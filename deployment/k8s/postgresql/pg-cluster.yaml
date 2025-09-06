@@ -33,3 +33,14 @@ spec:
 
   storage:
     size: 1Gi
+  
+  additionalVolumes:
+    - name: data-files
+      persistentVolumeClaim:
+        claimName: data-files-pvc
+  
+  additionalVolumeMounts:
+    - name: data-files
+      mountPath: /data-files
+      readOnly: true
+  

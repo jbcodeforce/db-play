@@ -13,6 +13,19 @@ spec:
       labels:
         app: pgadmin
     spec:
+      securityContext:
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /var/lib/pgadmin/storage && chown -R 5050:5050 /var/lib/pgadmin/storage && chmod -R 755 /var/lib/pgadmin/storage']
+        volumeMounts:
+        - name: pgadmin-storage
+          mountPath: /var/lib/pgadmin/storage
+        securityContext:
+          runAsUser: 0
       containers:
       - name: pgadmin
         image: dpage/pgadmin4:latest # Or a specific version
@@ -32,6 +45,26 @@ spec:
           requests:
             cpu: "500m"
             memory: "1Gi"
+
+        volumeMounts:
+        - name: data-files
+          mountPath: /var/lib/pgadmin/data_files
+          readOnly: true
+        - name: medium1-files
+          mountPath: /var/lib/pgadmin/medium1
+          readOnly: true
+        - name: pgadmin-storage
+          mountPath: /var/lib/pgadmin/storage
+      volumes:
+      - name: data-files
+        persistentVolumeClaim:
+          claimName: data-files-pvc
+      - name: medium1-files
+        persistentVolumeClaim:
+          claimName: medium1-files-pvc
+      - name: pgadmin-storage
+        persistentVolumeClaim:
+          claimName: pgadmin-storage-pvc
 ---
 apiVersion: v1
 kind: Service
