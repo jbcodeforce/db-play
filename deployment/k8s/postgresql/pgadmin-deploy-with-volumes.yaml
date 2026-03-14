@@ -59,11 +59,11 @@ spec:
       volumes:
       - name: data-files
         hostPath:
-          path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/data_files
+          path: /Users/jerome/Documents/Code/db-play/code/postgresql/data_files
           type: Directory
       - name: medium1-files
         hostPath:
-          path: /Users/jerome/Documents/Code/ReadOnlyRepos/db-play/code/postgresql/medium1
+          path: /Users/jerome/Documents/Code/db-play/code/postgresql/medium1
           type: Directory
       - name: pgadmin-storage
         hostPath:

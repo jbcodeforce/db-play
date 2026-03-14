@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: 'docker.io/postgres:11.6-alpine'
+          image: 'docker.io/postgres:16-alpine'
           envFrom:
           - secretRef:
               name: postgres-secrets

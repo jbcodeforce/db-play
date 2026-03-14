@@ -8,7 +8,7 @@ nav:
     - Puzzles: sql/puzzles.md
   - Techno:
     - PostgreSQL: postgres.md
-    - Duckdb: duckdb.mds
+    - Duckdb: duckdb.md
     - Cassandra: cassandra/readme.md
     - MySQL: mysql.md 
     - Debezium - CDC: debezium/index.md
